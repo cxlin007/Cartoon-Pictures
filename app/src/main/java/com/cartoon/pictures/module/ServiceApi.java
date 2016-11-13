@@ -1,5 +1,6 @@
 package com.cartoon.pictures.module;
 
+import com.cartoon.pictures.module.annotations.TypeString;
 import com.cartoon.pictures.module.bean.ImageInfo;
 
 import java.util.List;
@@ -15,6 +16,7 @@ import retrofit2.http.Query;
 
 public interface ServiceApi {
 
+    @TypeString
     @GET("http://www.3lian.com/gif/more/08/")
     Call<String> fetchImageList();
 }

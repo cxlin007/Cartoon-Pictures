@@ -14,6 +14,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by Administrator on 2016/11/13.
@@ -28,7 +29,9 @@ public class ServiceApiImpl {
     public ServiceApiImpl() {
         Retrofit retrofit = new Retrofit.Builder()
                 .client(createOkHttpClient())
-                .baseUrl("/")
+                .baseUrl("http://qq")
+                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(HtmlConverterFactory.create())
                 .build();
         serviceApi = retrofit.create(ServiceApi.class);
     }
