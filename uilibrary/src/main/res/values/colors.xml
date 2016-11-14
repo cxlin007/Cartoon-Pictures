@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="background_tab_pressed">#6633B5E5</color>
+
+    <!--下拉刷新-->
+    <color name="refresh_header_text_color">#707070</color>
+    <!-- 透明色 -->
+    <color name="mui__transparent">#00000000</color>
+</resources>

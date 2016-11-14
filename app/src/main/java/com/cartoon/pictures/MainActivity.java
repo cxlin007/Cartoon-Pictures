@@ -1,56 +1,97 @@
 package com.cartoon.pictures;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.widget.FrameLayout;
 
-import com.cartoon.pictures.module.ServiceApiImpl;
+import com.cartoon.pictures.adapters.MainAdapter;
+import com.cartoon.pictures.base.BaseActivity;
+import com.cartoon.pictures.business.controllers.CartoonPicturesController;
+import com.cartoon.pictures.business.state.CartoonPicturesState;
+import com.cartoon.pictures.uilibrary.widget.MListView;
+import com.cartoon.pictures.uilibrary.widget.MProgressView;
+import com.cartoon.pictures.widget.CommonListView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity implements CartoonPicturesController.CartoonPicturesMainUi,
+        MProgressView.MProgressViewLinstener,MListView.MListViewLinstener {
 
-    private ServiceApiImpl serviceApi;
+    private CommonListView commonListView;
+    private MainAdapter mainAdapter;
+    private CartoonPicturesController.CartoonPicturesUiCallbacks mCallbacks;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        serviceApi = new ServiceApiImpl();
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        FrameLayout rootLayout = (FrameLayout) findViewById(R.id.root_layout);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                serviceApi.fetchImageList();
-            }
-        });
+        mainAdapter = new MainAdapter(this);
+        commonListView = new CommonListView(this);
+        commonListView.setDivider(getResources().getDrawable(R.color.mui__transparent))
+                .setListAdapter(mainAdapter)
+                .setMProgressViewLinstener(this)
+                .setMListViewLinstener(this);
+        rootLayout.addView(commonListView.getRootContent());
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+    public void onResume() {
+        super.onResume();
+        getController().attachUi(this);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+    public void onPause() {
+        getController().detachUi(this);
+        super.onPause();
+    }
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+    @Override
+    protected CartoonPicturesController getController() {
+        return imContext.getCartoonPicturesController();
+    }
+
+    @Override
+    public void setData(CartoonPicturesState.ImagePageInfo imagePageInfo) {
+        mainAdapter.setImagePageInfo(imagePageInfo);
+    }
+
+    @Override
+    public void showLoadingProgress(boolean visible) {
+        if (visible) {
+            commonListView.setContentShown(false);
+        } else {
+            commonListView.setContentShown(true);
         }
+    }
 
-        return super.onOptionsItemSelected(item);
+    @Override
+    public void showError(Exception e) {
+        commonListView.showErrorView();
+    }
+
+    @Override
+    public void showSecondaryLoadingProgress(boolean visible) {
+        commonListView.setSecondaryProgressShown(visible);
+    }
+
+    @Override
+    public void showRefreshProgress(boolean successOrFail) {
+
+    }
+
+    @Override
+    public void setCallbacks(CartoonPicturesController.CartoonPicturesUiCallbacks callbacks) {
+        mCallbacks = callbacks;
+        mainAdapter.setCallBack(callbacks);
+    }
+
+    @Override
+    public void onErrorRetry() {
+        mCallbacks.onErrorRetry();
+    }
+
+    @Override
+    public void onScrollToBottom() {
+        mCallbacks.fetchImageList();
     }
 }

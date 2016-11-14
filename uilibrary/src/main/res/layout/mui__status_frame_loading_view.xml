@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mui__loading_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingTop="20dp"
+    android:paddingBottom="20dp"
+    android:background="@android:color/white" >
+
+    <TextView
+        android:id="@+id/state_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="@string/refreshing"
+        android:textColor="@color/refresh_header_text_color"
+        android:textSize="@dimen/refresh_header_text_size" />
+
+    <ProgressBar
+        android:id="@+id/refreshing_icon"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/refresh_header_arrow_right"
+        android:layout_toLeftOf="@id/state_tv"
+        android:indeterminateBehavior="repeat"
+        android:indeterminateDrawable="@drawable/pull_loading_bg"
+        android:indeterminateOnly="true" />
+
+</RelativeLayout>
