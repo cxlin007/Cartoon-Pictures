@@ -32,6 +32,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         imContext = (MainApplication) getApplication();
         mDisplay = new AndroidDisplay(this);
         mmHandler = new MMHandler(this);
+        getController().setDisplay(mDisplay);
     }
 
     @Override

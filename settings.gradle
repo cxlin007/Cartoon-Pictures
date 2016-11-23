@@ -1,1 +1,1 @@
-include ':app', ':corelibrary', ':business', ':uilibrary'
+include ':app', ':corelibrary', ':business', ':uilibrary', ':photoview'

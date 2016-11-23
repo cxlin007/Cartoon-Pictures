@@ -8,6 +8,8 @@ import android.widget.BaseAdapter;
 
 import com.cartoon.pictures.business.bean.PageInfo;
 
+import java.util.List;
+
 /**
  * Created by chenxunlin01 on 2016/4/21.
  */
@@ -15,7 +17,7 @@ public abstract class CommonAdapter<T> extends BaseAdapter {
 
     protected LayoutInflater mInflater;
     protected Context mContext;
-    protected PageInfo<T> pageInfo;
+    protected List<T> data;
     protected final int mItemLayoutId;
 
     public CommonAdapter(Context context, int itemLayoutId) {
@@ -26,12 +28,12 @@ public abstract class CommonAdapter<T> extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return pageInfo != null ? pageInfo.getData().size() : 0;
+        return data != null ? data.size() : 0;
     }
 
     @Override
     public T getItem(int position) {
-        return pageInfo.getData().get(position);
+        return data.get(position);
     }
 
     @Override

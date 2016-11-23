@@ -1,10 +1,14 @@
 package com.cartoon.pictures.business.state;
 
 import com.cartoon.pictures.business.BusinessManager;
+import com.cartoon.pictures.business.bean.ImageDetailInfo;
 import com.cartoon.pictures.business.bean.ImageInfo;
 import com.cartoon.pictures.business.bean.PageInfo;
 import com.catoon.corelibrary.EvnManager;
 import com.squareup.otto.Bus;
+
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by chenxunlin01 on 2016/11/14.
@@ -13,6 +17,7 @@ public class CartoonPicturesState {
 
     private Bus bus;
     public ImagePageInfo imagePageInfo;
+    public HashMap<String, List<ImageDetailInfo>> details = new HashMap<>();
 
     public CartoonPicturesState() {
         this.bus = BusinessManager.getBus();
@@ -25,6 +30,15 @@ public class CartoonPicturesState {
     public void setImagePageInfo(ImagePageInfo imagePageInfo) {
         this.imagePageInfo = imagePageInfo;
         bus.post(new CartoonPicturesMainDataChange());
+    }
+
+    public void addImageDetailInfos(String url, List<ImageDetailInfo> data) {
+        details.put(url, data);
+        bus.post(new CartoonPicturesMainDetailChange(url));
+    }
+
+    public List<ImageDetailInfo> getImageDetailInfos(String url) {
+        return details.get(url);
     }
 
     public static class ImagePageInfo extends PageInfo<ImageInfo> {
@@ -57,5 +71,13 @@ public class CartoonPicturesState {
 
     public static class CartoonPicturesMainDataChange {
 
+    }
+
+    public static class CartoonPicturesMainDetailChange {
+        public final String url;
+
+        public CartoonPicturesMainDetailChange(String url) {
+            this.url = url;
+        }
     }
 }

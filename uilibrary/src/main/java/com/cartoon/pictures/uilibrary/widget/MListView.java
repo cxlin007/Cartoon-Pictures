@@ -20,7 +20,7 @@ import com.cartoon.pictures.uilibrary.R;
 public class MListView extends FrameLayout implements AbsListView.OnScrollListener{
 
     private View emptyView;
-    private AbsListView content;
+    protected AbsListView content;
     private BaseAdapter mAdapter;
     private View mSecondaryProgressView;
     private LayoutInflater inflater;
@@ -100,6 +100,10 @@ public class MListView extends FrameLayout implements AbsListView.OnScrollListen
         }
     }
 
+    public boolean isSecondaryProgressShown(){
+        return mSecondaryProgressView.getVisibility() == View.VISIBLE;
+    }
+
     public void setSecondaryProgressShown(boolean visible) {
         mSecondaryProgressView.setVisibility(visible?View.VISIBLE:View.GONE);
     }
@@ -109,8 +113,8 @@ public class MListView extends FrameLayout implements AbsListView.OnScrollListen
         switch (scrollState) {
             // 当不滚动时
             case AbsListView.OnScrollListener.SCROLL_STATE_IDLE:
-                // 判断滚动到底部
-                if (view.getLastVisiblePosition() == (view.getCount() - 1)) {
+                // 判断滚动到底部  //是否正在加载
+                if ((view.getLastVisiblePosition() == (view.getCount() - 1) && !isSecondaryProgressShown())) {
                     onScrollToBottom();
                 }
                 break;

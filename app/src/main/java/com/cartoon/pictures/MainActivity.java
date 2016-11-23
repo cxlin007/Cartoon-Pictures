@@ -5,16 +5,18 @@ import android.widget.FrameLayout;
 
 import com.cartoon.pictures.adapters.MainAdapter;
 import com.cartoon.pictures.base.BaseActivity;
+import com.cartoon.pictures.business.bean.ImageInfo;
 import com.cartoon.pictures.business.controllers.CartoonPicturesController;
-import com.cartoon.pictures.business.state.CartoonPicturesState;
 import com.cartoon.pictures.uilibrary.widget.MListView;
 import com.cartoon.pictures.uilibrary.widget.MProgressView;
-import com.cartoon.pictures.widget.CommonListView;
+import com.cartoon.pictures.widget.CommonGridView;
+
+import java.util.List;
 
 public class MainActivity extends BaseActivity implements CartoonPicturesController.CartoonPicturesMainUi,
-        MProgressView.MProgressViewLinstener,MListView.MListViewLinstener {
+        MProgressView.MProgressViewLinstener, MListView.MListViewLinstener {
 
-    private CommonListView commonListView;
+    private CommonGridView commonGridView;
     private MainAdapter mainAdapter;
     private CartoonPicturesController.CartoonPicturesUiCallbacks mCallbacks;
 
@@ -24,13 +26,13 @@ public class MainActivity extends BaseActivity implements CartoonPicturesControl
         setContentView(R.layout.activity_main);
         FrameLayout rootLayout = (FrameLayout) findViewById(R.id.root_layout);
 
-        mainAdapter = new MainAdapter(this);
-        commonListView = new CommonListView(this);
-        commonListView.setDivider(getResources().getDrawable(R.color.mui__transparent))
+        mainAdapter = new MainAdapter(this, 3);
+        commonGridView = new CommonGridView(this);
+        commonGridView.setSpace((int) getResources().getDimension(R.dimen.grid_space))
                 .setListAdapter(mainAdapter)
                 .setMProgressViewLinstener(this)
                 .setMListViewLinstener(this);
-        rootLayout.addView(commonListView.getRootContent());
+        rootLayout.addView(commonGridView.getRootContent());
     }
 
     @Override
@@ -51,27 +53,27 @@ public class MainActivity extends BaseActivity implements CartoonPicturesControl
     }
 
     @Override
-    public void setData(CartoonPicturesState.ImagePageInfo imagePageInfo) {
-        mainAdapter.setImagePageInfo(imagePageInfo);
+    public void setData(List<ImageInfo> data) {
+        mainAdapter.setData(data);
     }
 
     @Override
     public void showLoadingProgress(boolean visible) {
         if (visible) {
-            commonListView.setContentShown(false);
+            commonGridView.setContentShown(false);
         } else {
-            commonListView.setContentShown(true);
+            commonGridView.setContentShown(true);
         }
     }
 
     @Override
     public void showError(Exception e) {
-        commonListView.showErrorView();
+        commonGridView.showErrorView();
     }
 
     @Override
     public void showSecondaryLoadingProgress(boolean visible) {
-        commonListView.setSecondaryProgressShown(visible);
+        commonGridView.setSecondaryProgressShown(visible);
     }
 
     @Override

@@ -7,9 +7,10 @@ package com.cartoon.pictures.business.bean;
 public class ImageInfo {
 
     private String url;
+    private String detailUrl;
 
-    public ImageInfo(String url) {
-        this.url = url;
+    public ImageInfo() {
+
     }
 
     public String getUrl() {
@@ -18,5 +19,21 @@ public class ImageInfo {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getDetailUrl() {
+        return detailUrl;
+    }
+
+    public void setDetailUrl(String detailUrl) {
+        this.detailUrl = detailUrl;
+    }
+
+    @Override
+    public String toString() {
+        return "ImageInfo{" +
+                "url='" + url + '\'' +
+                ", detailUrl='" + detailUrl + '\'' +
+                '}';
     }
 }

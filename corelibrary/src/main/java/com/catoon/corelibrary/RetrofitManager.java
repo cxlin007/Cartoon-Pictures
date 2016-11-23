@@ -33,17 +33,17 @@ public class RetrofitManager {
 
 
     private OkHttpClient createOkHttpClient() {
-        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
-            @Override
-            public void log(String message) {
-                Log.e(TAG, "log: " + message);
-            }
-        });
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+//        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
+//            @Override
+//            public void log(String message) {
+//                Log.e(TAG, "log: " + message);
+//            }
+//        });
+//        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient client = new OkHttpClient.Builder()
                 .readTimeout(30, TimeUnit.SECONDS)
                 .connectTimeout(12, TimeUnit.SECONDS)
-                .addInterceptor(interceptor)
+//                .addInterceptor(interceptor)
                 .retryOnConnectionFailure(true)
                 .build();
 

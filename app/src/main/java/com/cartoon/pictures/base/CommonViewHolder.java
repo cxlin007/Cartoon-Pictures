@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.cartoon.pictures.R;
+
 /**
  * Created by chenxunlin01 on 2016/5/31.
  */
@@ -20,7 +22,7 @@ public class CommonViewHolder<T> {
     private CommonViewHolder(Context context, ViewGroup parent, int layoutId, int position){
         mViews = new SparseArray<>();
         mConvertView = LayoutInflater.from(context).inflate(layoutId,parent,false);
-        mConvertView.setTag(this);
+        mConvertView.setTag(R.id.common_view_holder,this);
     }
 
     public static CommonViewHolder get(Context context,View convertView,ViewGroup parent,int layoutId,int position){
@@ -28,7 +30,7 @@ public class CommonViewHolder<T> {
             return new CommonViewHolder(context,parent,layoutId,position);
         }
 
-        return (CommonViewHolder) convertView.getTag();
+        return (CommonViewHolder) convertView.getTag(R.id.common_view_holder);
     }
 
     public <T extends View> T getView(int viewId){

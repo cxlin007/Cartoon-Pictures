@@ -1,8 +1,7 @@
 package com.cartoon.pictures.business.common;
 
-import android.content.Intent;
-import android.util.Log;
 
+import com.cartoon.pictures.business.bean.ImageDetailInfo;
 import com.cartoon.pictures.business.bean.ImageInfo;
 
 import org.jsoup.nodes.Document;
@@ -21,11 +20,18 @@ public class HtmlParseUtil {
         List<ImageInfo> imgeInfos = new ArrayList<ImageInfo>();
         Elements imgs = document.getElementsByClass("img");
         for (Element element : imgs) {
+            ImageInfo imageInfo = new ImageInfo();
             Elements ele = element.getElementsByTag("img");
             if (ele.size() > 0) {
                 String src = ele.get(0).attr("src");
-                imgeInfos.add(new ImageInfo(src));
+                imageInfo.setUrl(src);
             }
+            ele = element.getElementsByTag("a");
+            if (ele.size() > 0) {
+                String url = ele.get(0).attr("href");
+                imageInfo.setDetailUrl(url);
+            }
+            imgeInfos.add(imageInfo);
         }
 
         return imgeInfos;
@@ -35,8 +41,24 @@ public class HtmlParseUtil {
         Elements pages = document.getElementsByClass("page");
         Element pageEle = pages.get(0);
         String text = pageEle.text();
-        int index = text.indexOf(" ");
-        text = text.substring(5, index);
+        int endIndex = text.indexOf(" ");
+        int startIndex = text.indexOf("/") + 1;
+        text = text.substring(startIndex, endIndex);
         return Integer.valueOf(text.replace(" ", ""));
+    }
+
+    public static List<ImageDetailInfo> parseDetailImageInfos(Document document) {
+        List<ImageDetailInfo> imgeInfos = new ArrayList<ImageDetailInfo>();
+        Elements eles = document.getElementsByAttributeValue("style", "text-align: center");
+        for (Element ele : eles) {
+            Elements elements = ele.getElementsByAttributeValue("data-bd-imgshare-binded", "1");
+            for (Element element : elements) {
+                String url = element.attr("src");
+                ImageDetailInfo imageDetailInfo = new ImageDetailInfo();
+                imageDetailInfo.setUrl(url);
+                imgeInfos.add(imageDetailInfo);
+            }
+        }
+        return imgeInfos;
     }
 }

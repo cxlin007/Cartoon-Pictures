@@ -13,4 +13,7 @@ public interface ApiService {
     @GET("http://www.3lian.com/gif/more/08/{page}")
     Call<ResponseBody> fetchImageList(@Path("page") String page);
 
+    @GET("http://www.3lian.com/{url}")
+    Call<ResponseBody> fetchImageDetail(@Path("url") String url);
+
 }

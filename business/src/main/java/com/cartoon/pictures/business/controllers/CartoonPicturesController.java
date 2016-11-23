@@ -1,7 +1,10 @@
 package com.cartoon.pictures.business.controllers;
 
+import com.cartoon.pictures.business.BDisplay;
 import com.cartoon.pictures.business.BusinessManager;
 import com.cartoon.pictures.business.api.ApiServiceImpl;
+import com.cartoon.pictures.business.bean.ImageDetailInfo;
+import com.cartoon.pictures.business.bean.ImageInfo;
 import com.cartoon.pictures.business.state.CartoonPicturesState;
 import com.catoon.corelibrary.common.Utils;
 import com.catoon.corelibrary.controllers.BaseUiController;
@@ -41,13 +44,22 @@ public class CartoonPicturesController extends BaseUiController<CartoonPicturesC
         super.onUiAttached(ui);
         if (ui instanceof CartoonPicturesMainUi) {
             fetchImageListIfNeed(getId(ui));
+        } else if (ui instanceof CartoonPicturesDetailUi) {
+
         }
     }
 
     private void fetchImageListIfNeed(int callingId) {
         CartoonPicturesState.ImagePageInfo imagePageInfo = cartoonPicturesState.getImagePageInfo();
         if (imagePageInfo == null || Utils.isEmpty(imagePageInfo.getData())) {
-            apiService.fetchImageList(callingId,0);
+            apiService.fetchImageList(callingId, 0);
+        }
+    }
+
+    private void fetchImageDetailIfNeed(int callingId, String url) {
+        List<ImageDetailInfo> imageDetailInfos = cartoonPicturesState.getImageDetailInfos(url);
+        if (imageDetailInfos == null || Utils.isEmpty(imageDetailInfos)) {
+            apiService.fetchImageDetail(callingId, url);
         }
     }
 
@@ -60,7 +72,8 @@ public class CartoonPicturesController extends BaseUiController<CartoonPicturesC
     }
 
     private void populateCartoonPicturesMainUi(CartoonPicturesMainUi ui) {
-
+        CartoonPicturesState.ImagePageInfo imagePageInfo = cartoonPicturesState.getImagePageInfo();
+        ui.setData(imagePageInfo == null ? null : imagePageInfo.getData());
     }
 
     @Subscribe
@@ -82,14 +95,26 @@ public class CartoonPicturesController extends BaseUiController<CartoonPicturesC
         Set<CartoonPicturesUi> cartoonPicturesUis = getUis();
         for (CartoonPicturesUi ui : cartoonPicturesUis) {
             if (ui instanceof CartoonPicturesMainUi) {
-                ((CartoonPicturesMainUi) ui).setData(cartoonPicturesState.getImagePageInfo());
+                ((CartoonPicturesMainUi) ui).setData(cartoonPicturesState.getImagePageInfo() == null ? null :
+                        cartoonPicturesState.getImagePageInfo().getData());
+            }
+        }
+    }
+
+    @Subscribe
+    public void onCartoonPicturesMainDetailChange(CartoonPicturesState.CartoonPicturesMainDetailChange event) {
+        Set<CartoonPicturesUi> cartoonPicturesUis = getUis();
+        for (CartoonPicturesUi ui : cartoonPicturesUis) {
+            if (ui instanceof CartoonPicturesDetailUi) {
+                List<ImageDetailInfo> imageDetailInfos = cartoonPicturesState.getImageDetailInfos(event.url);
+                ((CartoonPicturesDetailUi) ui).setData(imageDetailInfos);
             }
         }
     }
 
     @Subscribe
     public void onShowErrorEvent(CartoonPicturesState.ShowErrorEvent event) {
-        CartoonPicturesUi ui = (CartoonPicturesUi) findUi(event.mCallingId);
+        CartoonPicturesUi ui = (CartoonPicturesDetailUi) findUi(event.mCallingId);
         if (ui == null) {
             return;
         }
@@ -105,15 +130,29 @@ public class CartoonPicturesController extends BaseUiController<CartoonPicturesC
             public void fetchImageList() {
                 CartoonPicturesState.ImagePageInfo imagePageInfo = cartoonPicturesState.getImagePageInfo();
                 if (imagePageInfo == null || Utils.isEmpty(imagePageInfo.getData())) {
-                    apiService.fetchImageList(getId(ui),0);
-                }else{
+                    apiService.fetchImageList(getId(ui), 0);
+                } else {
                     apiService.fetchImageList(getId(ui), imagePageInfo.nextPage());
                 }
             }
 
             @Override
+            public void fetchImageDetail(String url) {
+                apiService.fetchImageDetail(getId(ui), url);
+            }
+
+            @Override
             public void onErrorRetry() {
-                apiService.fetchImageList(getId(ui), 0);
+                if (ui instanceof CartoonPicturesMainUi) {
+                    apiService.fetchImageList(getId(ui), 0);
+                } else if (ui instanceof CartoonPicturesDetailUi) {
+                    apiService.fetchImageDetail(getId(ui), ((CartoonPicturesDetailUi) ui).getUrl());
+                }
+            }
+
+            @Override
+            public void onMainItemClick(ImageInfo imageInfo) {
+                ((BDisplay) getDisplay()).showImageDetailActivity(imageInfo.getDetailUrl());
             }
         };
     }
@@ -122,7 +161,11 @@ public class CartoonPicturesController extends BaseUiController<CartoonPicturesC
 
         public void fetchImageList();
 
+        public void fetchImageDetail(String url);
+
         public void onErrorRetry();
+
+        public void onMainItemClick(ImageInfo imageInfo);
 
     }
 
@@ -137,6 +180,13 @@ public class CartoonPicturesController extends BaseUiController<CartoonPicturesC
     }
 
     public interface CartoonPicturesMainUi extends CartoonPicturesUi {
-        void setData(CartoonPicturesState.ImagePageInfo imagePageInfo);
+        void setData(List<ImageInfo> data);
+    }
+
+    public interface CartoonPicturesDetailUi extends CartoonPicturesUi {
+
+        void setData(List<ImageDetailInfo> data);
+
+        String getUrl();
     }
 }
