@@ -1,6 +1,7 @@
 package com.cartoon.pictures.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,8 +41,9 @@ public class ImagePagerAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         PhotoView photoView = new PhotoView(container.getContext());
+        photoView.setBackgroundColor(Color.BLACK);
         container.addView(photoView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        Glide.with(context).load(datas.get(position).getUrl()).into(photoView);
+        Glide.with(context).load(datas.get(position).getUrl()).placeholder(R.drawable.pull_loading_1).into(photoView);
         return photoView;
     }
 

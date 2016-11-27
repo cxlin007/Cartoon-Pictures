@@ -23,12 +23,12 @@ public class HtmlParseUtil {
             ImageInfo imageInfo = new ImageInfo();
             Elements ele = element.getElementsByTag("img");
             if (ele.size() > 0) {
-                String src = ele.get(0).attr("src");
+                String src = ele.get(0).attr("src").trim();
                 imageInfo.setUrl(src);
             }
             ele = element.getElementsByTag("a");
             if (ele.size() > 0) {
-                String url = ele.get(0).attr("href");
+                String url = ele.get(0).attr("href").trim();
                 imageInfo.setDetailUrl(url);
             }
             imgeInfos.add(imageInfo);
@@ -51,9 +51,10 @@ public class HtmlParseUtil {
         List<ImageDetailInfo> imgeInfos = new ArrayList<ImageDetailInfo>();
         Elements eles = document.getElementsByAttributeValue("style", "text-align: center");
         for (Element ele : eles) {
-            Elements elements = ele.getElementsByAttributeValue("data-bd-imgshare-binded", "1");
+            Elements elements = ele.getElementsByTag("a");
             for (Element element : elements) {
-                String url = element.attr("src");
+                String href = element.attr("href").trim();
+                String url =  href.substring(href.indexOf("http")).trim();
                 ImageDetailInfo imageDetailInfo = new ImageDetailInfo();
                 imageDetailInfo.setUrl(url);
                 imgeInfos.add(imageDetailInfo);

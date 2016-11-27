@@ -45,7 +45,7 @@ public class CartoonPicturesController extends BaseUiController<CartoonPicturesC
         if (ui instanceof CartoonPicturesMainUi) {
             fetchImageListIfNeed(getId(ui));
         } else if (ui instanceof CartoonPicturesDetailUi) {
-
+            fetchImageDetailIfNeed(getId(ui), ((CartoonPicturesDetailUi) ui).getUrl());
         }
     }
 
@@ -68,12 +68,19 @@ public class CartoonPicturesController extends BaseUiController<CartoonPicturesC
         super.populateUi(ui);
         if (ui instanceof CartoonPicturesMainUi) {
             populateCartoonPicturesMainUi((CartoonPicturesMainUi) ui);
+        }else if(ui instanceof CartoonPicturesDetailUi){
+            populateCartoonPicturesDetailUi((CartoonPicturesDetailUi) ui);
         }
     }
 
     private void populateCartoonPicturesMainUi(CartoonPicturesMainUi ui) {
         CartoonPicturesState.ImagePageInfo imagePageInfo = cartoonPicturesState.getImagePageInfo();
         ui.setData(imagePageInfo == null ? null : imagePageInfo.getData());
+    }
+
+    private void populateCartoonPicturesDetailUi(CartoonPicturesDetailUi ui) {
+        List<ImageDetailInfo> imageDetailInfos = cartoonPicturesState.getImageDetailInfos(ui.getUrl());
+        ui.setData(imageDetailInfos);
     }
 
     @Subscribe

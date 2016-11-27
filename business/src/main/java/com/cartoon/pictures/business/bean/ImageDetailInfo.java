@@ -15,8 +15,11 @@ public class ImageDetailInfo {
         this.url = url;
     }
 
+
     @Override
     public String toString() {
-        return super.toString();
+        return "ImageDetailInfo{" +
+                "url='" + url + '\'' +
+                '}';
     }
 }

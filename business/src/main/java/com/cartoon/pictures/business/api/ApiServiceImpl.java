@@ -105,7 +105,6 @@ public class ApiServiceImpl {
                 List<ImageDetailInfo> imgeInfos = HtmlParseUtil.parseDetailImageInfos(document);
                 Log.e(TAG, "onResponse: " + imgeInfos.toString());
                 cartoonPicturesState.addImageDetailInfos(url, imgeInfos);
-
             }
 
             @Override
