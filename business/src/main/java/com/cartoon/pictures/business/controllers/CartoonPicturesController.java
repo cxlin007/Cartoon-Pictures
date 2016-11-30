@@ -3,6 +3,8 @@ package com.cartoon.pictures.business.controllers;
 import com.cartoon.pictures.business.BDisplay;
 import com.cartoon.pictures.business.BusinessManager;
 import com.cartoon.pictures.business.api.ApiServiceImpl;
+import com.cartoon.pictures.business.bean.CardInfo;
+import com.cartoon.pictures.business.bean.GifInfo;
 import com.cartoon.pictures.business.bean.ImageDetailInfo;
 import com.cartoon.pictures.business.bean.ImageInfo;
 import com.cartoon.pictures.business.state.CartoonPicturesState;
@@ -43,16 +45,15 @@ public class CartoonPicturesController extends BaseUiController<CartoonPicturesC
     protected void onUiAttached(CartoonPicturesUi ui) {
         super.onUiAttached(ui);
         if (ui instanceof CartoonPicturesMainUi) {
-            fetchImageListIfNeed(getId(ui));
+            fetchExpressionMainIfNeed(getId(ui));
         } else if (ui instanceof CartoonPicturesDetailUi) {
             fetchImageDetailIfNeed(getId(ui), ((CartoonPicturesDetailUi) ui).getUrl());
         }
     }
 
-    private void fetchImageListIfNeed(int callingId) {
-        CartoonPicturesState.ImagePageInfo imagePageInfo = cartoonPicturesState.getImagePageInfo();
-        if (imagePageInfo == null || Utils.isEmpty(imagePageInfo.getData())) {
-            apiService.fetchImageList(callingId, 0);
+    private void fetchExpressionMainIfNeed(int callingId) {
+        if (Utils.isEmpty(cartoonPicturesState.getCardInfos())) {
+            apiService.fetchExpressionMain(callingId);
         }
     }
 
@@ -68,14 +69,13 @@ public class CartoonPicturesController extends BaseUiController<CartoonPicturesC
         super.populateUi(ui);
         if (ui instanceof CartoonPicturesMainUi) {
             populateCartoonPicturesMainUi((CartoonPicturesMainUi) ui);
-        }else if(ui instanceof CartoonPicturesDetailUi){
+        } else if (ui instanceof CartoonPicturesDetailUi) {
             populateCartoonPicturesDetailUi((CartoonPicturesDetailUi) ui);
         }
     }
 
     private void populateCartoonPicturesMainUi(CartoonPicturesMainUi ui) {
-        CartoonPicturesState.ImagePageInfo imagePageInfo = cartoonPicturesState.getImagePageInfo();
-        ui.setData(imagePageInfo == null ? null : imagePageInfo.getData());
+        ui.setData(cartoonPicturesState.getCardInfos());
     }
 
     private void populateCartoonPicturesDetailUi(CartoonPicturesDetailUi ui) {
@@ -102,8 +102,7 @@ public class CartoonPicturesController extends BaseUiController<CartoonPicturesC
         Set<CartoonPicturesUi> cartoonPicturesUis = getUis();
         for (CartoonPicturesUi ui : cartoonPicturesUis) {
             if (ui instanceof CartoonPicturesMainUi) {
-                ((CartoonPicturesMainUi) ui).setData(cartoonPicturesState.getImagePageInfo() == null ? null :
-                        cartoonPicturesState.getImagePageInfo().getData());
+                ((CartoonPicturesMainUi) ui).setData(cartoonPicturesState.getCardInfos());
             }
         }
     }
@@ -121,7 +120,7 @@ public class CartoonPicturesController extends BaseUiController<CartoonPicturesC
 
     @Subscribe
     public void onShowErrorEvent(CartoonPicturesState.ShowErrorEvent event) {
-        CartoonPicturesUi ui = (CartoonPicturesDetailUi) findUi(event.mCallingId);
+        CartoonPicturesUi ui = (CartoonPicturesUi) findUi(event.mCallingId);
         if (ui == null) {
             return;
         }
@@ -134,13 +133,8 @@ public class CartoonPicturesController extends BaseUiController<CartoonPicturesC
     protected CartoonPicturesUiCallbacks createUiCallbacks(final CartoonPicturesUi ui) {
         return new CartoonPicturesUiCallbacks() {
             @Override
-            public void fetchImageList() {
-                CartoonPicturesState.ImagePageInfo imagePageInfo = cartoonPicturesState.getImagePageInfo();
-                if (imagePageInfo == null || Utils.isEmpty(imagePageInfo.getData())) {
-                    apiService.fetchImageList(getId(ui), 0);
-                } else {
-                    apiService.fetchImageList(getId(ui), imagePageInfo.nextPage());
-                }
+            public void fetchExpressionMain() {
+                apiService.fetchExpressionMain(getId(ui));
             }
 
             @Override
@@ -151,28 +145,31 @@ public class CartoonPicturesController extends BaseUiController<CartoonPicturesC
             @Override
             public void onErrorRetry() {
                 if (ui instanceof CartoonPicturesMainUi) {
-                    apiService.fetchImageList(getId(ui), 0);
+                    apiService.fetchExpressionMain(getId(ui));
                 } else if (ui instanceof CartoonPicturesDetailUi) {
                     apiService.fetchImageDetail(getId(ui), ((CartoonPicturesDetailUi) ui).getUrl());
                 }
             }
 
             @Override
-            public void onMainItemClick(ImageInfo imageInfo) {
-                ((BDisplay) getDisplay()).showImageDetailActivity(imageInfo.getDetailUrl());
+            public void onGifItemClick(GifInfo gifInfo) {
+                //展示弹出框
+                if (ui instanceof CartoonPicturesMainUi) {
+                    ((BDisplay) getDisplay()).showGifDialogActivity(gifInfo);
+                }
             }
         };
     }
 
     public interface CartoonPicturesUiCallbacks {
 
-        public void fetchImageList();
+        public void fetchExpressionMain();
 
         public void fetchImageDetail(String url);
 
         public void onErrorRetry();
 
-        public void onMainItemClick(ImageInfo imageInfo);
+        public void onGifItemClick(GifInfo gifInfo);
 
     }
 
@@ -184,10 +181,12 @@ public class CartoonPicturesController extends BaseUiController<CartoonPicturesC
         void showSecondaryLoadingProgress(boolean visible);
 
         void showRefreshProgress(boolean successOrFail);
+
+
     }
 
     public interface CartoonPicturesMainUi extends CartoonPicturesUi {
-        void setData(List<ImageInfo> data);
+        void setData(List<CardInfo> data);
     }
 
     public interface CartoonPicturesDetailUi extends CartoonPicturesUi {

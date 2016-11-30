@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 
 import com.cartoon.pictures.business.BDisplay;
+import com.cartoon.pictures.business.bean.GifInfo;
 import com.catoon.corelibrary.Display;
 
 /**
@@ -22,6 +23,13 @@ public class AndroidDisplay implements BDisplay {
     public void showImageDetailActivity(String url) {
         Intent intent = new Intent(activity,ImageDetailActivity.class);
         intent.putExtra("url",url);
+        activity.startActivity(intent);
+    }
+
+    @Override
+    public void showGifDialogActivity(GifInfo gifInfo) {
+        Intent intent = new Intent(activity,GifDialogActivity.class);
+        intent.putExtra("gif",gifInfo);
         activity.startActivity(intent);
     }
 }

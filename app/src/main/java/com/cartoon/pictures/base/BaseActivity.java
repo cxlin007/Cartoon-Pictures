@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Window;
 
 import com.cartoon.pictures.AndroidDisplay;
 import com.cartoon.pictures.MainApplication;
@@ -13,8 +14,6 @@ import com.catoon.corelibrary.controllers.BaseUiController;
 import java.lang.ref.WeakReference;
 
 /**
- *
- *
  * Created by chenxunlin01 on 2016/6/13.
  */
 public abstract class BaseActivity extends AppCompatActivity {
@@ -25,20 +24,21 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected MMHandler mmHandler;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         imContext = (MainApplication) getApplication();
         mDisplay = new AndroidDisplay(this);
         mmHandler = new MMHandler(this);
-        getController().setDisplay(mDisplay);
+        if (getController() != null) {
+            getController().setDisplay(mDisplay);
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if(getController()!=null){
+        if (getController() != null) {
             getController().setDisplay(mDisplay);
             getController().init();
         }
@@ -46,7 +46,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        if(getController()!=null){
+        if (getController() != null) {
             getController().setDisplay(null);
             getController().suspend();
         }

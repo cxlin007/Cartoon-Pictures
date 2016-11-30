@@ -1,6 +1,7 @@
 package com.cartoon.pictures.business.state;
 
 import com.cartoon.pictures.business.BusinessManager;
+import com.cartoon.pictures.business.bean.CardInfo;
 import com.cartoon.pictures.business.bean.ImageDetailInfo;
 import com.cartoon.pictures.business.bean.ImageInfo;
 import com.cartoon.pictures.business.bean.PageInfo;
@@ -17,10 +18,20 @@ public class CartoonPicturesState {
 
     private Bus bus;
     public ImagePageInfo imagePageInfo;
+    public List<CardInfo> cardInfos;
     public HashMap<String, List<ImageDetailInfo>> details = new HashMap<>();
 
     public CartoonPicturesState() {
         this.bus = BusinessManager.getBus();
+    }
+
+    public List<CardInfo> getCardInfos() {
+        return cardInfos;
+    }
+
+    public void setCardInfos(List<CardInfo> cardInfos) {
+        this.cardInfos = cardInfos;
+        bus.post(new CartoonPicturesMainDataChange());
     }
 
     public ImagePageInfo getImagePageInfo() {

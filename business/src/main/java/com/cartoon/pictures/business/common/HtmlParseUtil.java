@@ -1,6 +1,8 @@
 package com.cartoon.pictures.business.common;
 
 
+import com.cartoon.pictures.business.bean.CardInfo;
+import com.cartoon.pictures.business.bean.GifInfo;
 import com.cartoon.pictures.business.bean.ImageDetailInfo;
 import com.cartoon.pictures.business.bean.ImageInfo;
 
@@ -54,12 +56,39 @@ public class HtmlParseUtil {
             Elements elements = ele.getElementsByTag("a");
             for (Element element : elements) {
                 String href = element.attr("href").trim();
-                String url =  href.substring(href.indexOf("http")).trim();
+                String url = href.substring(href.indexOf("http")).trim();
                 ImageDetailInfo imageDetailInfo = new ImageDetailInfo();
                 imageDetailInfo.setUrl(url);
                 imgeInfos.add(imageDetailInfo);
             }
         }
         return imgeInfos;
+    }
+
+    public static List<CardInfo> parseCardInfos(Document document) {
+        List<CardInfo> cardInfos = new ArrayList<CardInfo>();
+        //添加其他分类
+        Elements eles = document.getElementsByClass("c_main_one");
+        for (Element ele : eles) {
+            CardInfo cardInfo = new CardInfo();
+            Element titleEle = ele.getElementsByClass("childclass_title").get(0);
+            Elements aEles = titleEle.getElementsByTag("a");
+            Element aEle = aEles.get(aEles.size() - 1);
+            cardInfo.setTitle(aEle.text().trim());
+            cardInfo.setRemoteUrl(Constants.DOMAIN+aEle.attr("href").trim());
+
+            List<GifInfo> oGifInfos = new ArrayList<>();
+            Elements lis = ele.getElementsByTag("li");
+            for (Element liEle :lis) {
+                Element img = liEle.getElementsByTag("img").get(0);
+                GifInfo gifInfo = new GifInfo();
+                gifInfo.setRemoteUrl(Constants.DOMAIN+img.attr("src").trim());
+                gifInfo.setDes(img.attr("alt").trim());
+                oGifInfos.add(gifInfo);
+            }
+            cardInfo.setGifInfos(oGifInfos);
+            cardInfos.add(cardInfo);
+        }
+        return cardInfos;
     }
 }

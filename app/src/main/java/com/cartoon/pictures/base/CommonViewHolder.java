@@ -66,6 +66,11 @@ public class CommonViewHolder<T> {
         return this;
     }
 
+    public CommonViewHolder setOnItemClickListener(View.OnClickListener listener){
+        mConvertView.setOnClickListener(listener);
+        return this;
+    }
+
     public View getConvertView(){
         return mConvertView;
     }

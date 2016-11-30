@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.cartoon.pictures.R;
 import com.cartoon.pictures.base.CommonViewHolder;
 import com.cartoon.pictures.business.bean.ImageInfo;
@@ -37,12 +38,12 @@ public class MainAdapter extends ABasisAdapter<CartoonPicturesController.Cartoon
     @Override
     protected void onBindViewHolder(CommonViewHolder holder, int position) {
         final ImageInfo imageInfo = getItem(position);
-        Glide.with(mContext).load(imageInfo.getUrl())
+        Glide.with(mContext).load(imageInfo.getUrl()).diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .into((ImageView) holder.getView(R.id.image_item));
         holder.setOnClickListener(R.id.image_item, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mCallBack.onMainItemClick(imageInfo);
+//                mCallBack.onMainItemClick(imageInfo);
             }
         });
     }

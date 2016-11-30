@@ -21,7 +21,6 @@ public class RetrofitManager {
         retrofit = new Retrofit.Builder()
                 .client(createOkHttpClient())
                 .baseUrl("http://qq")
-//                .addConverterFactory(GsonConverterFactory.create())
                 .addConverterFactory(HtmlConverterFactory.create())
                 .build();
     }

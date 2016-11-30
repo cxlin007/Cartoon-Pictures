@@ -16,4 +16,7 @@ public interface ApiService {
     @GET("http://www.3lian.com/{url}")
     Call<ResponseBody> fetchImageDetail(@Path("url") String url);
 
+    @GET("http://qq.yh31.com/")
+    Call<ResponseBody> fetchExpressionMain();
+
 }

@@ -3,6 +3,7 @@ package com.cartoon.pictures.business.api;
 import android.util.Log;
 
 import com.cartoon.pictures.business.BusinessManager;
+import com.cartoon.pictures.business.bean.CardInfo;
 import com.cartoon.pictures.business.bean.ImageDetailInfo;
 import com.cartoon.pictures.business.bean.ImageInfo;
 import com.cartoon.pictures.business.common.HtmlParseUtil;
@@ -40,7 +41,6 @@ public class ApiServiceImpl {
 
 
     public void fetchImageList(final int callingId, final int pageIndex) {
-        Log.e(TAG, "fetchImageList: " + pageIndex);
         if (pageIndex < 0) {
             return;
         }
@@ -105,6 +105,39 @@ public class ApiServiceImpl {
                 List<ImageDetailInfo> imgeInfos = HtmlParseUtil.parseDetailImageInfos(document);
                 Log.e(TAG, "onResponse: " + imgeInfos.toString());
                 cartoonPicturesState.addImageDetailInfos(url, imgeInfos);
+            }
+
+            @Override
+            protected void doFailure(Call<ResponseBody> call, Throwable t) {
+                handleError();
+            }
+
+            @Override
+            protected void doFinish() {
+                bus.post(createLoadingProgressEvent(callingId, false));
+            }
+
+            private void handleError() {
+                bus.post(createLoadingProgressEvent(callingId, false));
+                bus.post(new CartoonPicturesState.ShowErrorEvent(callingId));
+            }
+        });
+
+
+    }
+
+    public void fetchExpressionMain(final int callingId) {
+        bus.post(createLoadingProgressEvent(callingId, true));
+        Call<ResponseBody> call = serviceApi.fetchExpressionMain();
+        call.enqueue(new ACallback<ResponseBody>() {
+
+            @Override
+            protected void doResponse(Call<ResponseBody> call, Response<ResponseBody> response) throws Exception {
+                String str = new String(response.body().bytes(), "UTF-8");
+                Document document = Jsoup.parse(str);
+                List<CardInfo> cardInfos = HtmlParseUtil.parseCardInfos(document);
+                Log.e(TAG, "onResponse: " + cardInfos.toString());
+                cartoonPicturesState.setCardInfos(cardInfos);
             }
 
             @Override

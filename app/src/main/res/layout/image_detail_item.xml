@@ -1,18 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:wheel="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/transparent">
+    android:background="@color/black">
 
     <com.cartoon.pictures.uilibrary.widget.ProgressWheel
-        android:id="@+id/progress_wheel"
+        android:id="@+id/item_progress_wheel"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:visibility="visible"
         wheel:matProg_barColor="#5588FF"
         wheel:matProg_progressIndeterminate="true"/>
 
+    <uk.co.senab.photoview.PhotoView
+        android:id="@+id/photoView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
-</RelativeLayout>
+</FrameLayout>

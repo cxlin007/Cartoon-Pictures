@@ -1,5 +1,6 @@
 package com.cartoon.pictures.business;
 
+import com.cartoon.pictures.business.bean.GifInfo;
 import com.catoon.corelibrary.Display;
 
 /**
@@ -8,4 +9,6 @@ import com.catoon.corelibrary.Display;
 public interface BDisplay extends Display {
 
     public void showImageDetailActivity(String url);
+
+    public void showGifDialogActivity(GifInfo gifInfo);
 }
