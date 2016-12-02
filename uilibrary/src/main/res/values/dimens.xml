@@ -16,4 +16,13 @@
     <dimen name="refresh_header_right_padding">8dip</dimen>
     <dimen name="refresh_header_text_size">12sp</dimen>
 
+    <!--TabPageIndicator字体-->
+    <dimen name="mui__tab_text_size">16sp</dimen>
+    <dimen name="mui__tab_text_margin">6dp</dimen>
+    <dimen name="mui__tab_text_offset">4dp</dimen>
+
+    <!--CircleIndicator-->
+    <dimen name="default_circle_indicator_stroke_width">0dip</dimen>
+    <dimen name="default_circle_indicator_radius">4dip</dimen>
+
 </resources>

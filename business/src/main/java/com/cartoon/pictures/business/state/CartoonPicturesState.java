@@ -2,6 +2,8 @@ package com.cartoon.pictures.business.state;
 
 import com.cartoon.pictures.business.BusinessManager;
 import com.cartoon.pictures.business.bean.CardInfo;
+import com.cartoon.pictures.business.bean.CategoryInfo;
+import com.cartoon.pictures.business.bean.GifPageResult;
 import com.cartoon.pictures.business.bean.ImageDetailInfo;
 import com.cartoon.pictures.business.bean.ImageInfo;
 import com.cartoon.pictures.business.bean.PageInfo;
@@ -17,9 +19,9 @@ import java.util.List;
 public class CartoonPicturesState {
 
     private Bus bus;
-    public ImagePageInfo imagePageInfo;
     public List<CardInfo> cardInfos;
     public HashMap<String, List<ImageDetailInfo>> details = new HashMap<>();
+    private HashMap<String, List<CategoryInfo>> suCategoryInfos = new HashMap<>();
 
     public CartoonPicturesState() {
         this.bus = BusinessManager.getBus();
@@ -34,15 +36,6 @@ public class CartoonPicturesState {
         bus.post(new CartoonPicturesMainDataChange());
     }
 
-    public ImagePageInfo getImagePageInfo() {
-        return imagePageInfo;
-    }
-
-    public void setImagePageInfo(ImagePageInfo imagePageInfo) {
-        this.imagePageInfo = imagePageInfo;
-        bus.post(new CartoonPicturesMainDataChange());
-    }
-
     public void addImageDetailInfos(String url, List<ImageDetailInfo> data) {
         details.put(url, data);
         bus.post(new CartoonPicturesMainDetailChange(url));
@@ -52,9 +45,21 @@ public class CartoonPicturesState {
         return details.get(url);
     }
 
-    public static class ImagePageInfo extends PageInfo<ImageInfo> {
+    public void putSuCategoryInfos(String key, List<CategoryInfo> categoryInfos) {
+        suCategoryInfos.put(key, categoryInfos);
     }
 
+    public List<CategoryInfo> getSuCategoryInfos(String key) {
+        return suCategoryInfos.get(key);
+    }
+
+    public void setSuCategoryInfos(HashMap<String, List<CategoryInfo>> suCategoryInfos) {
+        this.suCategoryInfos = suCategoryInfos;
+    }
+
+    public HashMap<String, List<CategoryInfo>> getSuCategoryInfos() {
+        return suCategoryInfos;
+    }
 
     public static class ShowLoadingProgressEvent {
         public final boolean show;
@@ -89,6 +94,24 @@ public class CartoonPicturesState {
 
         public CartoonPicturesMainDetailChange(String url) {
             this.url = url;
+        }
+    }
+
+    public static class CartoonPicturesSuCategoryListChanged {
+        public final int mCallingId;
+        public final GifPageResult pageResult;
+
+        public CartoonPicturesSuCategoryListChanged(int mCallingId, GifPageResult pageResult) {
+            this.mCallingId = mCallingId;
+            this.pageResult = pageResult;
+        }
+    }
+
+    public static class CartoonPicturesCategoryListChanged {
+        public final int mCallingId;
+
+        public CartoonPicturesCategoryListChanged(int mCallingId) {
+            this.mCallingId = mCallingId;
         }
     }
 }

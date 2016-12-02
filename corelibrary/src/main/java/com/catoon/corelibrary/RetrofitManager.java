@@ -2,9 +2,13 @@ package com.catoon.corelibrary;
 
 import android.util.Log;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 
@@ -12,7 +16,7 @@ import retrofit2.Retrofit;
  * Created by chenxunlin01 on 2016/11/14.
  */
 public class RetrofitManager {
-    
+
     public static final String TAG = "RetrofitManager";
 
     private Retrofit retrofit;
@@ -25,10 +29,9 @@ public class RetrofitManager {
                 .build();
     }
 
-    public <T> T create(final Class<T> service){
+    public <T> T create(final Class<T> service) {
         return retrofit.create(service);
     }
-
 
 
     private OkHttpClient createOkHttpClient() {
@@ -42,7 +45,6 @@ public class RetrofitManager {
         OkHttpClient client = new OkHttpClient.Builder()
                 .readTimeout(30, TimeUnit.SECONDS)
                 .connectTimeout(12, TimeUnit.SECONDS)
-//                .addInterceptor(interceptor)
                 .retryOnConnectionFailure(true)
                 .build();
 

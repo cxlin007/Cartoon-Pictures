@@ -1,15 +1,17 @@
 package com.cartoon.pictures.business.bean;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * 卡片
  * Created by chenxunlin01 on 2016/11/29.
  */
-public class CardInfo {
+public class CardInfo implements Serializable {
 
     private String title;
     private String remoteUrl;
+    private String key;
 
     private List<GifInfo> gifInfos;
 
@@ -37,11 +39,20 @@ public class CardInfo {
         this.remoteUrl = remoteUrl;
     }
 
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
     @Override
     public String toString() {
         return "CardInfo{" +
                 "title='" + title + '\'' +
                 ", remoteUrl='" + remoteUrl + '\'' +
+                ", key='" + key + '\'' +
                 ", gifInfos=" + gifInfos +
                 '}';
     }

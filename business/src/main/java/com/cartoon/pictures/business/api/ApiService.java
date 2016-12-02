@@ -10,13 +10,13 @@ import retrofit2.http.Path;
  */
 public interface ApiService {
 
-    @GET("http://www.3lian.com/gif/more/08/{page}")
-    Call<ResponseBody> fetchImageList(@Path("page") String page);
-
-    @GET("http://www.3lian.com/{url}")
-    Call<ResponseBody> fetchImageDetail(@Path("url") String url);
-
     @GET("http://qq.yh31.com/")
     Call<ResponseBody> fetchExpressionMain();
+
+    @GET("http://qq.yh31.com/{page}")
+    Call<ResponseBody> fetchSuCategoryList(@Path("page") String page);
+
+    @GET("http://qq.yh31.com/{page}")
+    Call<ResponseBody> fetchCategory(@Path("page") String page);
 
 }

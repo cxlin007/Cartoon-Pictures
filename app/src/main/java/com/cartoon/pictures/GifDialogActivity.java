@@ -43,7 +43,7 @@ public class GifDialogActivity extends BaseActivity {
         ImageView imageView = (ImageView) findViewById(R.id.gif_img);
         final ProgressWheel progressWheel = (com.cartoon.pictures.uilibrary.widget.ProgressWheel) findViewById(R.id
                 .item_progress_wheel);
-        Glide.with(this).load(gifInfo.getRemoteUrl()).diskCacheStrategy(DiskCacheStrategy.SOURCE).centerCrop()
+        Glide.with(this).load(gifInfo.getRemoteUrl()).diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .listener(new RequestListener<String, GlideDrawable>() {
 
                     @Override

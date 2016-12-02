@@ -62,7 +62,7 @@ public class MainActivity extends BaseActivity implements CartoonPicturesControl
 
     @Override
     public void showLoadingProgress(boolean visible) {
-        if (visible) {
+        if (!visible) {
             commonListView.setContentShown(false);
         } else {
             commonListView.setContentShown(true);

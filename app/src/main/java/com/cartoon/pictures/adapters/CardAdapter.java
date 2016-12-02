@@ -1,6 +1,8 @@
 package com.cartoon.pictures.adapters;
 
 import android.content.Context;
+import android.view.View;
+
 import com.cartoon.pictures.R;
 import com.cartoon.pictures.base.CommonViewHolder;
 import com.cartoon.pictures.business.bean.CardInfo;
@@ -33,6 +35,12 @@ public class CardAdapter extends ABasisAdapter<CartoonPicturesController.Cartoon
     protected void onBindViewHolder(CommonViewHolder holder, int position) {
         final CardInfo cardInfo = getItem(position);
         holder.setText(R.id.title, cardInfo.getTitle());
+        holder.setOnClickListener(R.id.title, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mCallBack.onCardItemMoreClick(cardInfo);
+            }
+        });
         FixHeightGirdView gridLayout = (FixHeightGirdView) holder.getView(R.id.gridLayout);
         CardGridAdapter adapter = (CardGridAdapter) gridLayout.getAdapter();
         if (adapter == null) {
