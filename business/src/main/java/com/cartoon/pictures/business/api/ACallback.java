@@ -54,7 +54,7 @@ public abstract class ACallback<T> implements Callback<T> {
     }
 
     private Object createPageLoadingProgressEvent(int callingId, boolean show, int page) {
-        if (page > 0) {
+        if (page > 1) {
             return new CartoonPicturesState.ShowLoadingProgressEvent(callingId, show, true);
         } else {
             return new CartoonPicturesState.ShowLoadingProgressEvent(callingId, show);

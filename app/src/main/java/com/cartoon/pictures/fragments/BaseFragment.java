@@ -28,23 +28,5 @@ public abstract class BaseFragment extends Fragment {
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (getController() != null) {
-            getController().setDisplay(mDisplay);
-            getController().init();
-        }
-    }
-
-    @Override
-    public void onPause() {
-        if (getController() != null) {
-            getController().setDisplay(null);
-            getController().suspend();
-        }
-        super.onPause();
-    }
-
     protected abstract BaseUiController getController();
 }

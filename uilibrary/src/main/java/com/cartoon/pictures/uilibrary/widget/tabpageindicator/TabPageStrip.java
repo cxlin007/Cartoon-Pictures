@@ -61,9 +61,10 @@ public class TabPageStrip extends LinearLayout {
         a.recycle();
 
         setWillNotDraw(false);
-        a = context.obtainStyledAttributes(null, R.styleable.ViewPagerIndicator, themeAttr, 0);
-        mSelectedUnderlineDrawable = a.getDrawable(R.styleable.ViewPagerIndicator_tabPageIndicator);
-        a.recycle();
+//        a = context.obtainStyledAttributes(null, R.styleable.ViewPagerIndicator, themeAttr, 0);
+//        mSelectedUnderlineDrawable = a.getDrawable(R.styleable.ViewPagerIndicator_tabPageIndicator);
+//        a.recycle();
+        mSelectedUnderlineDrawable = new ColorDrawable(0xFF3F51B5);
     }
 
     public void setDividerDrawable(Drawable divider) {

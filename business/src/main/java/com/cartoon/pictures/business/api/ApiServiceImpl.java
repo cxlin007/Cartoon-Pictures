@@ -49,7 +49,7 @@ public class ApiServiceImpl {
     }
 
     public void fetchExpressionMain(final int callingId) {
-        bus.post(createLoadingProgressEvent(callingId, true));
+        bus.post(createPageLoadingProgressEvent(callingId, true,1));
         Call<ResponseBody> call = serviceApi.fetchExpressionMain();
         call.enqueue(new ACallback<ResponseBody>(bus, 1, callingId) {
 
@@ -67,7 +67,7 @@ public class ApiServiceImpl {
     }
 
     public void fetchCategory(final int callingId, CardInfo cardInfo) {
-        bus.post(createLoadingProgressEvent(callingId, true));
+        bus.post(createPageLoadingProgressEvent(callingId, true,1));
         Call<ResponseBody> call = serviceApi.fetchCategory(cardInfo.getKey());
         call.enqueue(new ACallback<ResponseBody>(bus, 1, callingId) {
 
@@ -83,21 +83,22 @@ public class ApiServiceImpl {
         });
     }
 
-    public void fetchSuCategoryList(final int callingId, CategoryInfo categoryInfo, final GifPageResult
+    public void fetchSuCategoryList(final int callingId, CategoryInfo categoryInfo, GifPageResult
             currPageResult) {
-        if (!currPageResult.hasNextPage()) {
+        if (currPageResult != null && !currPageResult.hasNextPage()) {
             return;
         }
+        final int nextPage = currPageResult == null ? 1 : currPageResult.nextPage();
         String path = "";
-        if (currPageResult.nextPage() == 1) {
+        if (nextPage == 1) {
             path = categoryInfo.getKey();
         } else {
             path = categoryInfo.getKey() + "List_" + currPageResult.nextPage() + ".html";
         }
 
-        bus.post(createLoadingProgressEvent(callingId, true));
+        bus.post(createPageLoadingProgressEvent(callingId, true,nextPage));
         Call<ResponseBody> call = serviceApi.fetchSuCategoryList(path);
-        call.enqueue(new ACallback<ResponseBody>(bus, currPageResult.nextPage(), callingId) {
+        call.enqueue(new ACallback<ResponseBody>(bus, nextPage, callingId) {
 
             @Override
             protected void doResponse(Call<ResponseBody> call, Response<ResponseBody> response) throws Exception {
@@ -106,7 +107,7 @@ public class ApiServiceImpl {
                 Document document = Jsoup.parse(str);
                 //解析分类
                 GifPageResult gifPageResult = HtmlParseUtil.parseGifInfoList(document);
-                gifPageResult.currPage = currPageResult.nextPage();
+                gifPageResult.currPage = nextPage;
                 Log.e(TAG, "onResponse: " + gifPageResult.toString());
                 bus.post(new CartoonPicturesState.CartoonPicturesSuCategoryListChanged(callingId, gifPageResult));
 
@@ -114,8 +115,12 @@ public class ApiServiceImpl {
         });
     }
 
-    private Object createLoadingProgressEvent(int callingId, boolean show) {
-        return new CartoonPicturesState.ShowLoadingProgressEvent(callingId, show);
+    private Object createPageLoadingProgressEvent(int callingId, boolean show, int page) {
+        if (page > 1) {
+            return new CartoonPicturesState.ShowLoadingProgressEvent(callingId, show, true);
+        } else {
+            return new CartoonPicturesState.ShowLoadingProgressEvent(callingId, show);
+        }
     }
 
 }

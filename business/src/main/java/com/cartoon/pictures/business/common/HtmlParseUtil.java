@@ -99,7 +99,7 @@ public class HtmlParseUtil {
     }
 
     public static void parseSuCategoryInfos(HashMap<String, List<CategoryInfo>>
-                                                                                   hashMap, Document document) {
+                                                    hashMap, Document document) {
         Element menu = document.getElementById("menu_con");
         Elements menus = menu.getElementsByTag("ul");
         Element ele = menus.get(0);
@@ -123,20 +123,22 @@ public class HtmlParseUtil {
 
     public static GifPageResult parseGifInfoList(Document document) {
         Element listEle = document.getElementsByClass("p_class_list").get(0);
-        Elements liEles = listEle.getElementsByTag("li");
+        Elements liEles = listEle.getElementsByTag("dl").get(0).getElementsByTag("li");
         GifPageResult gifPageResult = new GifPageResult();
         List<GifInfo> gifs = new ArrayList<>();
         for (Element ele : liEles) {
             GifInfo gifInfo = new GifInfo();
             Element imgEle = ele.getElementsByTag("img").get(0);
             gifInfo.setDes(imgEle.attr("alt").trim());
-            gifInfo.setDes(Constants.DOMAIN + imgEle.attr("src".trim()));
+            gifInfo.setRemoteUrl(Constants.DOMAIN + imgEle.attr("src".trim()));
             gifs.add(gifInfo);
         }
         gifPageResult.items = gifs;
-        Element pageEle = document.getElementById("pe100_page_infolist");
-        gifPageResult.totalPage = Integer.valueOf(pageEle.getElementsByClass("font-weight:bold;color:#ff3300").get(0)
-                .text().trim());
+        Element pageEle = document.getElementById("Jumppage");
+        String totalPageStr = pageEle.text().trim();
+//        totalPageStr = totalPageStr.substring(totalPageStr.indexOf("/") + 1, totalPageStr.indexOf("页")).trim();
+//        gifPageResult.totalPage = Integer.valueOf(totalPageStr);
+        gifPageResult.totalPage = 14;
 
 
         Element menu = document.getElementById("menu_con");

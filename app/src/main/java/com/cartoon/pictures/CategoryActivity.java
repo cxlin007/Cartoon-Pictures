@@ -52,6 +52,7 @@ public class CategoryActivity extends BaseActivity implements CartoonPicturesCon
     @Override
     public void setData(List<CategoryInfo> data) {
         categoryAdapter.setData(data);
+        mTabPageIndicator.notifyDataSetChanged();
     }
 
     @Override

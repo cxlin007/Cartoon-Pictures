@@ -30,6 +30,7 @@ public class CategoryFragment extends BaseFragment implements MListView.MListVie
         CategoryFragment categoryFragment = new CategoryFragment();
         Bundle args = new Bundle();
         args.putSerializable("info", categoryInfo);
+        categoryFragment.setArguments(args);
         return categoryFragment;
     }
 
