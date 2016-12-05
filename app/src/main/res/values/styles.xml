@@ -6,6 +6,11 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+        <!-- TabPageIndicator的样式 -->
+        <item name="muiTabPageStyle">@style/MUI.TabPage</item>
+        <item name="muiTabPageSubTabStyle">@style/MUI.TabPageSubTab</item>
+
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -18,8 +23,34 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
+
+    <style name="MUI.TabPage" parent="android:Widget">
+        <item name="android:divider">?attr/actionBarDivider</item>
+        <item name="android:dividerPadding">12dp</item>
+        <item name="android:showDividers">none</item>
+        <item name="tabPageBackground">@drawable/mui__tab_bg</item>
+        <item name="tabPageIndicator">@drawable/mui__tab_page_indicator_line</item>
+    </style>
+
+    <style name="MUI.TabPageSubTab" parent="android:Widget">
+        <item name="android:gravity">center</item>
+        <item name="android:paddingLeft">8dip</item>
+        <item name="android:paddingRight">8dip</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dip</item>
+        <item name="android:textAppearance">@style/MUI.TextAppearance.TabPageIndicator</item>
+        <item name="android:maxLines">1</item>
+    </style>
+
+    <style name="MUI.TextAppearance.TabPageIndicator" parent="android:Widget">
+        <item name="android:textSize">@dimen/mui__tab_text_size</item>
+        <item name="android:textColor">@color/mui__tab_text_color</item>
+        <item name="android:ellipsize">none</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textStyle">normal</item>
+    </style>
 
 </resources>

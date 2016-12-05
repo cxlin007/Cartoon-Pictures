@@ -24,8 +24,4 @@ public class MGridView extends MListView{
     protected AbsListView createListView(Context context) {
         return new GridView(context);
     }
-
-    public void setColumn(int column){
-        ((GridView)content).setNumColumns(column);
-    }
 }

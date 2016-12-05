@@ -13,7 +13,7 @@
         android:theme="@style/AppTheme.NoActionBar">
 
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
@@ -25,17 +25,10 @@
         </activity>
 
         <activity
-            android:name=".ImageDetailActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
-
-        <activity
-            android:name=".GifDialogActivity"
+            android:name=".activities.GifDialogActivity"
             android:theme="@style/GifDialog"/>
 
-        <activity android:name=".CategoryActivity"
+        <activity android:name=".activities.CategoryActivity"
                   android:screenOrientation="portrait"
                   android:theme="@style/AppTheme.NoActionBar"/>
     </application>

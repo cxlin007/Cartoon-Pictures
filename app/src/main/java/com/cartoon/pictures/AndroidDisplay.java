@@ -3,10 +3,11 @@ package com.cartoon.pictures;
 import android.app.Activity;
 import android.content.Intent;
 
+import com.cartoon.pictures.activities.CategoryActivity;
+import com.cartoon.pictures.activities.GifDialogActivity;
 import com.cartoon.pictures.business.BDisplay;
 import com.cartoon.pictures.business.bean.CardInfo;
 import com.cartoon.pictures.business.bean.GifInfo;
-import com.catoon.corelibrary.Display;
 
 /**
  * Created by chenxunlin01 on 2016/11/14.
@@ -19,13 +20,6 @@ public class AndroidDisplay implements BDisplay {
         this.activity = activity;
     }
 
-
-    @Override
-    public void showImageDetailActivity(String url) {
-        Intent intent = new Intent(activity,ImageDetailActivity.class);
-        intent.putExtra("url",url);
-        activity.startActivity(intent);
-    }
 
     @Override
     public void showGifDialogActivity(GifInfo gifInfo) {

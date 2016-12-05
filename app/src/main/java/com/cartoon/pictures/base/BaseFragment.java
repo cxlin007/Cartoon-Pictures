@@ -1,4 +1,4 @@
-package com.cartoon.pictures.fragments;
+package com.cartoon.pictures.base;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

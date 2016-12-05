@@ -23,7 +23,7 @@ public class GifAdapter extends ABasisAdapter<CartoonPicturesController.CartoonP
     private GifPageResult gifPageResult;
 
     public GifAdapter(Context context) {
-        super(context, R.layout.gif_item);
+        super(context, R.layout.sucategory_gif_item);
     }
 
     public void setData(GifPageResult gifPageResult) {

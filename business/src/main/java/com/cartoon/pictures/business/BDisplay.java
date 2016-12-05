@@ -10,8 +10,6 @@ import com.catoon.corelibrary.Display;
  */
 public interface BDisplay extends Display {
 
-    public void showImageDetailActivity(String url);
-
     public void showGifDialogActivity(GifInfo gifInfo);
 
     public void showCategoryActivity(CardInfo cardInfo);

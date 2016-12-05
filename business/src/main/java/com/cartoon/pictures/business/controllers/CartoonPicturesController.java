@@ -48,14 +48,19 @@ public class CartoonPicturesController extends BaseUiController<CartoonPicturesC
         if (ui instanceof CartoonPicturesMainUi) {
             fetchExpressionMainIfNeed(getId(ui));
         } else if (ui instanceof CartoonPicturesSuCategoryUi) {
-            apiService.fetchSuCategoryList(getId(ui), ((CartoonPicturesSuCategoryUi) ui).getSuCategoryInfo(), (
-                    (CartoonPicturesSuCategoryUi) ui).getGifPageResult());
+            fetchCartoonPicturesSuCategoryIfNeed((CartoonPicturesSuCategoryUi) ui);
         }
     }
 
     private void fetchExpressionMainIfNeed(int callingId) {
         if (Utils.isEmpty(cartoonPicturesState.getCardInfos())) {
             apiService.fetchExpressionMain(callingId);
+        }
+    }
+
+    private void fetchCartoonPicturesSuCategoryIfNeed(CartoonPicturesSuCategoryUi ui) {
+        if (ui.getGifPageResult() == null) {
+            apiService.fetchSuCategoryList(getId(ui), ui.getSuCategoryInfo(), ui.getGifPageResult());
         }
     }
 
@@ -114,17 +119,6 @@ public class CartoonPicturesController extends BaseUiController<CartoonPicturesC
     }
 
     @Subscribe
-    public void onCartoonPicturesCategoryListChanged(CartoonPicturesState.CartoonPicturesCategoryListChanged
-                                                             event) {
-        CartoonPicturesCategoryUi ui = (CartoonPicturesCategoryUi) findUi(event.mCallingId);
-        if (ui == null) {
-            return;
-        }
-
-        ui.setData(cartoonPicturesState.getSuCategoryInfos(ui.getCardInfo().getKey()));
-    }
-
-    @Subscribe
     public void onShowErrorEvent(CartoonPicturesState.ShowErrorEvent event) {
         CartoonPicturesUi ui = (CartoonPicturesUi) findUi(event.mCallingId);
         if (ui == null || !(ui instanceof CartoonPicturesProgressUi)) {
@@ -150,17 +144,13 @@ public class CartoonPicturesController extends BaseUiController<CartoonPicturesC
                 } else if (ui instanceof CartoonPicturesSuCategoryUi) {
                     apiService.fetchSuCategoryList(getId(ui), ((CartoonPicturesSuCategoryUi) ui).getSuCategoryInfo(), (
                             (CartoonPicturesSuCategoryUi) ui).getGifPageResult());
-                } else if (ui instanceof CartoonPicturesCategoryUi) {
-                    apiService.fetchCategory(getId(ui), ((CartoonPicturesCategoryUi) ui).getCardInfo());
                 }
             }
 
             @Override
             public void onGifItemClick(GifInfo gifInfo) {
                 //展示弹出框
-                if (ui instanceof CartoonPicturesMainUi) {
-                    ((BDisplay) getDisplay()).showGifDialogActivity(gifInfo);
-                }
+                ((BDisplay) getDisplay()).showGifDialogActivity(gifInfo);
             }
 
             @Override
@@ -173,10 +163,6 @@ public class CartoonPicturesController extends BaseUiController<CartoonPicturesC
                 apiService.fetchSuCategoryList(getId(ui), suCategortInfo, pageResult);
             }
 
-            @Override
-            public void fetchCategory(CardInfo cardInfo) {
-                apiService.fetchCategory(getId(ui), cardInfo);
-            }
         };
     }
 
@@ -191,8 +177,6 @@ public class CartoonPicturesController extends BaseUiController<CartoonPicturesC
         public void onCardItemMoreClick(CardInfo cardInfo);
 
         public void fetchSuCategoryGifList(CategoryInfo suCategortInfo, GifPageResult pageResult);
-
-        public void fetchCategory(CardInfo cardInfo);
 
     }
 

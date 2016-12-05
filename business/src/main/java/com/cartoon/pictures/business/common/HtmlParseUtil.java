@@ -22,53 +22,6 @@ import java.util.List;
  */
 public class HtmlParseUtil {
 
-    public static List<ImageInfo> parseMainImageInfos(Document document) {
-        List<ImageInfo> imgeInfos = new ArrayList<ImageInfo>();
-        Elements imgs = document.getElementsByClass("img");
-        for (Element element : imgs) {
-            ImageInfo imageInfo = new ImageInfo();
-            Elements ele = element.getElementsByTag("img");
-            if (ele.size() > 0) {
-                String src = ele.get(0).attr("src").trim();
-                imageInfo.setUrl(src);
-            }
-            ele = element.getElementsByTag("a");
-            if (ele.size() > 0) {
-                String url = ele.get(0).attr("href").trim();
-                imageInfo.setDetailUrl(url);
-            }
-            imgeInfos.add(imageInfo);
-        }
-
-        return imgeInfos;
-    }
-
-    public static int parseMainTotalPage(Document document) {
-        Elements pages = document.getElementsByClass("page");
-        Element pageEle = pages.get(0);
-        String text = pageEle.text();
-        int endIndex = text.indexOf(" ");
-        int startIndex = text.indexOf("/") + 1;
-        text = text.substring(startIndex, endIndex);
-        return Integer.valueOf(text.replace(" ", ""));
-    }
-
-    public static List<ImageDetailInfo> parseDetailImageInfos(Document document) {
-        List<ImageDetailInfo> imgeInfos = new ArrayList<ImageDetailInfo>();
-        Elements eles = document.getElementsByAttributeValue("style", "text-align: center");
-        for (Element ele : eles) {
-            Elements elements = ele.getElementsByTag("a");
-            for (Element element : elements) {
-                String href = element.attr("href").trim();
-                String url = href.substring(href.indexOf("http")).trim();
-                ImageDetailInfo imageDetailInfo = new ImageDetailInfo();
-                imageDetailInfo.setUrl(url);
-                imgeInfos.add(imageDetailInfo);
-            }
-        }
-        return imgeInfos;
-    }
-
     public static List<CardInfo> parseCardInfos(Document document) {
         List<CardInfo> cardInfos = new ArrayList<CardInfo>();
         //添加其他分类
@@ -134,35 +87,12 @@ public class HtmlParseUtil {
             gifs.add(gifInfo);
         }
         gifPageResult.items = gifs;
-        Element pageEle = document.getElementById("Jumppage");
-        String totalPageStr = pageEle.text().trim();
-//        totalPageStr = totalPageStr.substring(totalPageStr.indexOf("/") + 1, totalPageStr.indexOf("页")).trim();
-//        gifPageResult.totalPage = Integer.valueOf(totalPageStr);
-        gifPageResult.totalPage = 14;
-
-
-        Element menu = document.getElementById("menu_con");
-        Elements menus = menu.getElementsByAttributeValue("style", "display: none");
-        HashMap<String, List<CategoryInfo>> hashMap = new HashMap<>();
-        for (int i = 2; i < menus.size(); i++) {
-            Element ele = menus.get(i);
-            List<CategoryInfo> categoryInfos = new ArrayList<>();
-            Elements aEles = ele.getElementsByTag("a");
-            String key = "";
-            for (Element aEle : aEles) {
-                CategoryInfo categoryInfo = new CategoryInfo();
-                Element span = aEle.getElementsByTag("span").get(0);
-                String href = aEle.attr("href").trim();
-                if (Utils.isEmptyStr(key)) {
-                    key = href.substring(0, href.indexOf("/", 2) + 1);
-                }
-                categoryInfo.setKey(href);
-                categoryInfo.setDes(span.text().trim());
-                categoryInfo.setRemoteUrl(Constants.DOMAIN + href);
-                categoryInfos.add(categoryInfo);
-            }
-            hashMap.put(key, categoryInfos);
-        }
+        Element pageEle = document.getElementsByAttributeValue("style", "font-weight:bold;color:#ff3300").get(0);
+        int total = Integer.valueOf(pageEle.text().trim());
+        int totalPage = total / gifs.size();
+        int yu = total % gifs.size();
+        totalPage += (yu == 0 ? 0 : 1);
+        gifPageResult.totalPage = totalPage;
 
         return gifPageResult;
     }

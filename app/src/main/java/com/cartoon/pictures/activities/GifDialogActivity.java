@@ -1,4 +1,4 @@
-package com.cartoon.pictures;
+package com.cartoon.pictures.activities;
 
 import android.app.AlertDialog;
 import android.graphics.drawable.ColorDrawable;
@@ -14,6 +14,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.cartoon.pictures.R;
 import com.cartoon.pictures.adapters.CardAdapter;
 import com.cartoon.pictures.base.BaseActivity;
 import com.cartoon.pictures.business.bean.CardInfo;

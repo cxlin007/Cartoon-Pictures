@@ -1,10 +1,12 @@
-package com.cartoon.pictures;
+package com.cartoon.pictures.activities;
 
-import android.app.AlertDialog;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.widget.AbsListView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 
+import com.cartoon.pictures.R;
 import com.cartoon.pictures.adapters.CardAdapter;
 import com.cartoon.pictures.base.BaseActivity;
 import com.cartoon.pictures.business.bean.CardInfo;
@@ -12,8 +14,6 @@ import com.cartoon.pictures.business.controllers.CartoonPicturesController;
 import com.cartoon.pictures.uilibrary.widget.MProgressView;
 import com.cartoon.pictures.widget.CommonListView;
 import com.catoon.corelibrary.common.Utils;
-
-import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -31,9 +31,16 @@ public class MainActivity extends BaseActivity implements CartoonPicturesControl
         setContentView(R.layout.activity_main);
         LinearLayout rootLayout = (LinearLayout) findViewById(R.id.root_layout);
         mainAdapter = new CardAdapter(this);
-        commonListView = new CommonListView(this);
-        commonListView.setDivider(new ColorDrawable(getResources().getColor(R.color.common_background)));
-        commonListView.setDividerHeight(Utils.dip2px(this, line));
+        commonListView = new CommonListView(this) {
+
+            @Override
+            protected void setContentStyle(ListView listView) {
+                super.setContentStyle(listView);
+                listView.setDivider(new ColorDrawable(getResources().getColor(R.color.common_background)));
+                listView.setDividerHeight(Utils.dip2px(MainActivity.this, line));
+                listView.setVerticalScrollBarEnabled(false);
+            }
+        };
         commonListView.setListAdapter(mainAdapter).setMProgressViewLinstener(this);
         rootLayout.addView(commonListView.getRootContent());
     }
@@ -62,7 +69,7 @@ public class MainActivity extends BaseActivity implements CartoonPicturesControl
 
     @Override
     public void showLoadingProgress(boolean visible) {
-        if (!visible) {
+        if (visible) {
             commonListView.setContentShown(false);
         } else {
             commonListView.setContentShown(true);

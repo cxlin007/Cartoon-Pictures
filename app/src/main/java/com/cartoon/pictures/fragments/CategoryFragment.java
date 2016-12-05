@@ -5,8 +5,10 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridView;
 
 import com.cartoon.pictures.adapters.GifAdapter;
+import com.cartoon.pictures.base.BaseFragment;
 import com.cartoon.pictures.business.bean.CategoryInfo;
 import com.cartoon.pictures.business.bean.GifPageResult;
 import com.cartoon.pictures.business.controllers.CartoonPicturesController;
@@ -52,10 +54,22 @@ public class CategoryFragment extends BaseFragment implements MListView.MListVie
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle
             savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        commonGridView = new CommonGridView(getActivity());
-        commonGridView.setSpace(Utils.dip2px(getActivity(), line));
+        commonGridView = new CommonGridView(getActivity()) {
+            @Override
+            public void setContentStyle(GridView gView) {
+                super.setContentStyle(gView);
+                gView.setNumColumns(3);
+                int spaceDP = Utils.dip2px(getActivity(), line);
+                gView.setPadding(spaceDP, 0, spaceDP, 0);
+                gView.setHorizontalSpacing(spaceDP);
+                gView.setVerticalSpacing(spaceDP);
+                gView.setVerticalScrollBarEnabled(false);
+            }
+        };
         gifAdapter = new GifAdapter(getActivity());
-        commonGridView.setListAdapter(gifAdapter).setMListViewLinstener(this).setMProgressViewLinstener(this);
+        commonGridView.setListAdapter(gifAdapter)
+                .setMListViewLinstener(this)
+                .setMProgressViewLinstener(this);
         return commonGridView.getRootContent();
     }
 

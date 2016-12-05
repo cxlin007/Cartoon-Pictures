@@ -1,8 +1,10 @@
-package com.cartoon.pictures;
+package com.cartoon.pictures.activities;
 
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.widget.TextView;
 
+import com.cartoon.pictures.R;
 import com.cartoon.pictures.adapters.CategoryAdapter;
 import com.cartoon.pictures.base.BaseActivity;
 import com.cartoon.pictures.business.bean.CardInfo;
@@ -30,6 +32,9 @@ public class CategoryActivity extends BaseActivity implements CartoonPicturesCon
         mTabPageIndicator = (TabPageIndicator) findViewById(R.id.tab_page_indicator_nav_view_ind);
         mTabPageIndicator.setHorizontalFadingEdgeEnabled(true);
         mTabPageIndicator.setViewPager(viewPager);
+
+        TextView title = (TextView) findViewById(R.id.tool_title);
+        title.setText(getCardInfo().getTitle());
     }
 
     @Override

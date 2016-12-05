@@ -107,11 +107,4 @@ public class CartoonPicturesState {
         }
     }
 
-    public static class CartoonPicturesCategoryListChanged {
-        public final int mCallingId;
-
-        public CartoonPicturesCategoryListChanged(int mCallingId) {
-            this.mCallingId = mCallingId;
-        }
-    }
 }

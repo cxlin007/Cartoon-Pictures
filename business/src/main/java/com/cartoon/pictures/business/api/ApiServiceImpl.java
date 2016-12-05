@@ -3,32 +3,26 @@ package com.cartoon.pictures.business.api;
 import android.util.Log;
 
 import com.cartoon.pictures.business.BusinessManager;
+import com.cartoon.pictures.business.ProgressSubscriber;
 import com.cartoon.pictures.business.bean.CardInfo;
 import com.cartoon.pictures.business.bean.CategoryInfo;
-import com.cartoon.pictures.business.bean.GifInfo;
 import com.cartoon.pictures.business.bean.GifPageResult;
-import com.cartoon.pictures.business.bean.ImageDetailInfo;
-import com.cartoon.pictures.business.bean.ImageInfo;
-import com.cartoon.pictures.business.common.Constants;
 import com.cartoon.pictures.business.common.HtmlParseUtil;
 import com.cartoon.pictures.business.state.CartoonPicturesState;
-import com.catoon.corelibrary.common.Utils;
 import com.squareup.otto.Bus;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Administrator on 2016/11/13.
@@ -49,38 +43,43 @@ public class ApiServiceImpl {
     }
 
     public void fetchExpressionMain(final int callingId) {
-        bus.post(createPageLoadingProgressEvent(callingId, true,1));
-        Call<ResponseBody> call = serviceApi.fetchExpressionMain();
-        call.enqueue(new ACallback<ResponseBody>(bus, 1, callingId) {
+        Observable<ResponseBody> call = serviceApi.fetchExpressionMain();
+        final int page = 1;
+        Log.e(TAG, "fetchExpressionMain: " + Thread.currentThread().getId());
+        call.subscribeOn(Schedulers.io())
+                .flatMap(new Func1<ResponseBody, Observable<List<CardInfo>>>() {
+                    @Override
+                    public Observable<List<CardInfo>> call(final ResponseBody responseBody) {
+                        return Observable.create(new Observable.OnSubscribe<List<CardInfo>>() {
 
-            @Override
-            protected void doResponse(Call<ResponseBody> call, Response<ResponseBody> response) throws Exception {
-                String str = new String(response.body().bytes(), "UTF-8");
+                            @Override
+                            public void call(Subscriber<? super List<CardInfo>> subscriber) {
+                                try {
+                                    String str = new String(responseBody.bytes(), "UTF-8");
+                                    Document document = Jsoup.parse(str);
+                                    List<CardInfo> cardInfos = HtmlParseUtil.parseCardInfos(document);
 
+                                    Log.e(TAG, "onResponse: " + cardInfos.toString());
 
-                Document document = Jsoup.parse(str);
-                List<CardInfo> cardInfos = HtmlParseUtil.parseCardInfos(document);
-                Log.e(TAG, "onResponse: " + cardInfos.toString());
-                cartoonPicturesState.setCardInfos(cardInfos);
-            }
-        });
-    }
+                                    subscriber.onNext(cardInfos);
+                                    subscriber.onCompleted();
 
-    public void fetchCategory(final int callingId, CardInfo cardInfo) {
-        bus.post(createPageLoadingProgressEvent(callingId, true,1));
-        Call<ResponseBody> call = serviceApi.fetchCategory(cardInfo.getKey());
-        call.enqueue(new ACallback<ResponseBody>(bus, 1, callingId) {
+                                } catch (IOException e) {
+                                    subscriber.onError(e);
+                                }
+                            }
+                        });
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new ProgressSubscriber<List<CardInfo>>(bus, callingId, page) {
+                    @Override
+                    public void onNext(List<CardInfo> cardInfos) {
+                        super.onNext(cardInfos);
+                        cartoonPicturesState.setCardInfos(cardInfos);
+                    }
+                });
 
-            @Override
-            protected void doResponse(Call<ResponseBody> call, Response<ResponseBody> response) throws Exception {
-                String str = new String(response.body().bytes(), "UTF-8");
-
-                Document document = Jsoup.parse(str);
-                //解析分类
-                HtmlParseUtil.parseSuCategoryInfos(cartoonPicturesState.getSuCategoryInfos(), document);
-                bus.post(new CartoonPicturesState.CartoonPicturesCategoryListChanged(callingId));
-            }
-        });
     }
 
     public void fetchSuCategoryList(final int callingId, CategoryInfo categoryInfo, GifPageResult
@@ -88,39 +87,43 @@ public class ApiServiceImpl {
         if (currPageResult != null && !currPageResult.hasNextPage()) {
             return;
         }
-        final int nextPage = currPageResult == null ? 1 : currPageResult.nextPage();
+        final int page = currPageResult == null ? 1 : currPageResult.nextPage();
         String path = "";
-        if (nextPage == 1) {
+        if (page == 1) {
             path = categoryInfo.getKey();
         } else {
             path = categoryInfo.getKey() + "List_" + currPageResult.nextPage() + ".html";
         }
+        Observable<ResponseBody> call = serviceApi.fetchSuCategoryList(path);
+        call.subscribeOn(Schedulers.io())
+                .map(new Func1<ResponseBody, GifPageResult>() {
 
-        bus.post(createPageLoadingProgressEvent(callingId, true,nextPage));
-        Call<ResponseBody> call = serviceApi.fetchSuCategoryList(path);
-        call.enqueue(new ACallback<ResponseBody>(bus, nextPage, callingId) {
+                    @Override
+                    public GifPageResult call(ResponseBody responseBody) {
+                        String str = null;
+                        try {
+                            str = new String(responseBody.bytes(), "UTF-8");
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
 
-            @Override
-            protected void doResponse(Call<ResponseBody> call, Response<ResponseBody> response) throws Exception {
-                String str = new String(response.body().bytes(), "UTF-8");
+                        Document document = Jsoup.parse(str);
+                        //解析分类
+                        GifPageResult gifPageResult = HtmlParseUtil.parseGifInfoList(document);
+                        gifPageResult.currPage = page;
+                        Log.e(TAG, "onResponse: " + gifPageResult.toString());
 
-                Document document = Jsoup.parse(str);
-                //解析分类
-                GifPageResult gifPageResult = HtmlParseUtil.parseGifInfoList(document);
-                gifPageResult.currPage = nextPage;
-                Log.e(TAG, "onResponse: " + gifPageResult.toString());
-                bus.post(new CartoonPicturesState.CartoonPicturesSuCategoryListChanged(callingId, gifPageResult));
-
-            }
-        });
+                        return gifPageResult;
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new ProgressSubscriber<GifPageResult>(bus, callingId, page) {
+                    @Override
+                    public void onNext(GifPageResult gifPageResult) {
+                        super.onNext(gifPageResult);
+                        bus.post(new CartoonPicturesState.CartoonPicturesSuCategoryListChanged(callingId,
+                                gifPageResult));
+                    }
+                });
     }
-
-    private Object createPageLoadingProgressEvent(int callingId, boolean show, int page) {
-        if (page > 1) {
-            return new CartoonPicturesState.ShowLoadingProgressEvent(callingId, show, true);
-        } else {
-            return new CartoonPicturesState.ShowLoadingProgressEvent(callingId, show);
-        }
-    }
-
 }
