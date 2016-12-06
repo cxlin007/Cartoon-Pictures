@@ -2,11 +2,14 @@ package com.cartoon.pictures.adapters;
 
 import android.content.Context;
 import android.view.View;
+import android.widget.ImageView;
 
+import com.bumptech.glide.util.Util;
 import com.cartoon.pictures.R;
 import com.cartoon.pictures.base.CommonViewHolder;
 import com.cartoon.pictures.business.bean.CardInfo;
 import com.cartoon.pictures.business.controllers.CartoonPicturesController;
+import com.cartoon.pictures.common.Utils;
 import com.cartoon.pictures.widget.FixHeightGirdView;
 
 import java.util.List;
@@ -35,7 +38,7 @@ public class CardAdapter extends ABasisAdapter<CartoonPicturesController.Cartoon
     protected void onBindViewHolder(CommonViewHolder holder, int position) {
         final CardInfo cardInfo = getItem(position);
         holder.setText(R.id.title, cardInfo.getTitle());
-        holder.setOnClickListener(R.id.title, new View.OnClickListener() {
+        holder.setOnClickListener(R.id.title_layout, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mCallBack.onCardItemMoreClick(cardInfo);
@@ -49,5 +52,9 @@ public class CardAdapter extends ABasisAdapter<CartoonPicturesController.Cartoon
         }
         adapter.setCallBack(mCallBack);
         adapter.setData(cardInfo.getGifInfos());
+        ((ImageView) holder.getView(R.id.title_mark)).setBackgroundColor(mContext.getResources().getColor(R.color
+                .colorPrimary));
+        ImageView imageView = (ImageView) holder.getView(R.id.title_mark);
+        imageView.setBackgroundColor(Utils.getMarkColor(position));
     }
 }

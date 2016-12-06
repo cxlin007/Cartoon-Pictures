@@ -2,4 +2,5 @@
     <string name="app_name">表情</string>
     <string name="action_settings">Settings</string>
     <string name="gif_tag">GIF</string>
+    <string name="title_more">更多</string>
 </resources>

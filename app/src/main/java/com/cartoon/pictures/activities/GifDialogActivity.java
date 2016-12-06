@@ -1,12 +1,10 @@
 package com.cartoon.pictures.activities;
 
-import android.app.AlertDialog;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -15,35 +13,38 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.cartoon.pictures.R;
-import com.cartoon.pictures.adapters.CardAdapter;
 import com.cartoon.pictures.base.BaseActivity;
-import com.cartoon.pictures.business.bean.CardInfo;
 import com.cartoon.pictures.business.bean.GifInfo;
-import com.cartoon.pictures.business.controllers.CartoonPicturesController;
-import com.cartoon.pictures.uilibrary.widget.MProgressView;
 import com.cartoon.pictures.uilibrary.widget.ProgressWheel;
-import com.cartoon.pictures.widget.CommonListView;
-import com.catoon.corelibrary.common.Utils;
 import com.catoon.corelibrary.controllers.BaseUiController;
+import com.downloader.DownloaderManager;
+import com.downloader.IDownloaderLinstener;
+import com.downloader.bean.DownloaderInfo;
 
-import java.util.List;
 
-public class GifDialogActivity extends BaseActivity {
+public class GifDialogActivity extends BaseActivity implements IDownloaderLinstener {
+
+    public static final String TAG = "GifDialogActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gif_dialog);
-
-        GifInfo gifInfo = (GifInfo) getIntent().getSerializableExtra("gif");
+        final GifInfo gifInfo = getGifInfo();
         if (gifInfo == null) {
             finish();
             return;
         }
 
+        bindDatas();
+    }
+
+    private void bindDatas() {
         ImageView imageView = (ImageView) findViewById(R.id.gif_img);
         final ProgressWheel progressWheel = (com.cartoon.pictures.uilibrary.widget.ProgressWheel) findViewById(R.id
                 .item_progress_wheel);
+        final View imgLayout = findViewById(R.id.img_layout);
+        final GifInfo gifInfo = getGifInfo();
         Glide.with(this).load(gifInfo.getRemoteUrl()).diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .listener(new RequestListener<String, GlideDrawable>() {
 
@@ -51,6 +52,7 @@ public class GifDialogActivity extends BaseActivity {
                     public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean
                             isFirstResource) {
                         progressWheel.setVisibility(View.GONE);
+                        imgLayout.setVisibility(View.INVISIBLE);
                         return false;
                     }
 
@@ -58,15 +60,45 @@ public class GifDialogActivity extends BaseActivity {
                     public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target,
                                                    boolean isFromMemoryCache, boolean isFirstResource) {
                         progressWheel.setVisibility(View.GONE);
+                        imgLayout.setVisibility(View.VISIBLE);
                         return false;
                     }
                 }).into
                 (imageView);
+
+        Button downBtn = (Button) findViewById(R.id.downloader);
+        downBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DownloaderInfo downloaderInfo = new DownloaderInfo();
+                downloaderInfo.setId(gifInfo.getRemoteUrl().hashCode() + "");
+                downloaderInfo.setUrl(gifInfo.getRemoteUrl());
+                DownloaderManager.instance().start(downloaderInfo, GifDialogActivity.this);
+            }
+        });
+    }
+
+    private GifInfo getGifInfo() {
+        return (GifInfo) getIntent().getSerializableExtra("gif");
     }
 
     @Override
-    protected BaseUiController getController() {
-        return null;
+    public void downloaderPause() {
+        Log.e(TAG, "downloaderPause: ");
     }
 
+    @Override
+    public void downloaderError(Exception ex) {
+        Log.e(TAG, "downloaderError: ");
+    }
+
+    @Override
+    public void downloaderSuccess() {
+        Log.e(TAG, "downloaderSuccess: ");
+    }
+
+    @Override
+    public void downloaderProgressChange(int progress) {
+        Log.e(TAG, "downloaderProgressChange: " + progress);
+    }
 }

@@ -53,7 +53,9 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onPause();
     }
 
-    protected abstract BaseUiController getController();
+    protected BaseUiController getController(){
+        return null;
+    }
 
 
     /**
