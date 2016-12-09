@@ -1,18 +1,16 @@
 package com.cartoon.pictures.activities;
 
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.widget.AbsListView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 
 import com.cartoon.pictures.R;
 import com.cartoon.pictures.adapters.CardAdapter;
 import com.cartoon.pictures.base.BaseActivity;
 import com.cartoon.pictures.business.bean.CardInfo;
 import com.cartoon.pictures.business.controllers.CartoonPicturesController;
+import com.cartoon.pictures.uilibrary.widget.GridViewWithHeaderAndFooter;
 import com.cartoon.pictures.uilibrary.widget.MProgressView;
-import com.cartoon.pictures.widget.CommonListView;
+import com.cartoon.pictures.widget.CommonGridView;
 import com.catoon.corelibrary.common.Utils;
 
 import java.util.List;
@@ -20,7 +18,7 @@ import java.util.List;
 public class MainActivity extends BaseActivity implements CartoonPicturesController.CartoonPicturesMainUi,
         MProgressView.MProgressViewLinstener {
 
-    private CommonListView commonListView;
+    private CommonGridView commonGridView;
     private CardAdapter mainAdapter;
     private CartoonPicturesController.CartoonPicturesUiCallbacks mCallbacks;
     private int line = 8;
@@ -31,18 +29,19 @@ public class MainActivity extends BaseActivity implements CartoonPicturesControl
         setContentView(R.layout.activity_main);
         LinearLayout rootLayout = (LinearLayout) findViewById(R.id.root_layout);
         mainAdapter = new CardAdapter(this);
-        commonListView = new CommonListView(this) {
+        commonGridView = new CommonGridView(this) {
 
             @Override
-            protected void setContentStyle(ListView listView) {
-                super.setContentStyle(listView);
-                listView.setDivider(new ColorDrawable(getResources().getColor(R.color.common_background)));
-                listView.setDividerHeight(Utils.dip2px(MainActivity.this, line));
-                listView.setVerticalScrollBarEnabled(false);
+            protected void setContentStyle(GridViewWithHeaderAndFooter gridView) {
+                super.setContentStyle(gridView);
+                gridView.setNumColumns(1);
+                int spaceDP = Utils.dip2px(MainActivity.this, line);
+                gridView.setVerticalSpacing(spaceDP);
+                gridView.setVerticalScrollBarEnabled(false);
             }
         };
-        commonListView.setListAdapter(mainAdapter).setMProgressViewLinstener(this);
-        rootLayout.addView(commonListView.getRootContent());
+        commonGridView.setListAdapter(mainAdapter).setMProgressViewLinstener(this).setMoreEnable(false);
+        rootLayout.addView(commonGridView.getRootContent());
     }
 
     @Override
@@ -70,20 +69,19 @@ public class MainActivity extends BaseActivity implements CartoonPicturesControl
     @Override
     public void showLoadingProgress(boolean visible) {
         if (visible) {
-            commonListView.setContentShown(false);
+            commonGridView.setContentShown(false);
         } else {
-            commonListView.setContentShown(true);
+            commonGridView.setContentShown(true);
         }
     }
 
     @Override
     public void showError(Exception e) {
-        commonListView.showErrorView();
+        commonGridView.showErrorView();
     }
 
     @Override
-    public void showSecondaryLoadingProgress(boolean visible) {
-        commonListView.setSecondaryProgressShown(visible);
+    public void showSecondaryLoadingProgress(boolean visible, boolean hasMore) {
     }
 
     @Override

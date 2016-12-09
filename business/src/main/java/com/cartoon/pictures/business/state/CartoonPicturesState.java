@@ -64,16 +64,18 @@ public class CartoonPicturesState {
     public static class ShowLoadingProgressEvent {
         public final boolean show;
         public final boolean secondary;
+        public final boolean hasMore;
         public final int mCallingId;
 
         public ShowLoadingProgressEvent(int callingId, boolean show) {
-            this(callingId, show, false);
+            this(callingId, show, false,false);
         }
 
-        public ShowLoadingProgressEvent(int callingId, boolean show, boolean secondary) {
+        public ShowLoadingProgressEvent(int callingId, boolean show, boolean secondary,boolean hasMore) {
             this.mCallingId = callingId;
             this.show = show;
             this.secondary = secondary;
+            this.hasMore = hasMore;
         }
     }
 

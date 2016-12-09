@@ -5,14 +5,14 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridView;
 
 import com.cartoon.pictures.adapters.GifAdapter;
 import com.cartoon.pictures.base.BaseFragment;
 import com.cartoon.pictures.business.bean.CategoryInfo;
 import com.cartoon.pictures.business.bean.GifPageResult;
 import com.cartoon.pictures.business.controllers.CartoonPicturesController;
-import com.cartoon.pictures.uilibrary.widget.MListView;
+import com.cartoon.pictures.uilibrary.widget.GridViewWithHeaderAndFooter;
+import com.cartoon.pictures.uilibrary.widget.MGridView;
 import com.cartoon.pictures.uilibrary.widget.MProgressView;
 import com.cartoon.pictures.widget.CommonGridView;
 import com.catoon.corelibrary.common.Utils;
@@ -20,7 +20,7 @@ import com.catoon.corelibrary.common.Utils;
 /**
  * Created by chenxunlin01 on 2016/12/1.
  */
-public class CategoryFragment extends BaseFragment implements MListView.MListViewLinstener, MProgressView
+public class CategoryFragment extends BaseFragment implements MGridView.MListViewLinstener, MProgressView
         .MProgressViewLinstener, CartoonPicturesController.CartoonPicturesSuCategoryUi {
 
     private int line = 8;
@@ -56,20 +56,21 @@ public class CategoryFragment extends BaseFragment implements MListView.MListVie
         super.onCreateView(inflater, container, savedInstanceState);
         commonGridView = new CommonGridView(getActivity()) {
             @Override
-            public void setContentStyle(GridView gView) {
-                super.setContentStyle(gView);
-                gView.setNumColumns(3);
+            public void setContentStyle(GridViewWithHeaderAndFooter listView) {
+                super.setContentStyle(listView);
+                listView.setNumColumns(3);
                 int spaceDP = Utils.dip2px(getActivity(), line);
-                gView.setPadding(spaceDP, 0, spaceDP, 0);
-                gView.setHorizontalSpacing(spaceDP);
-                gView.setVerticalSpacing(spaceDP);
-                gView.setVerticalScrollBarEnabled(false);
+                listView.setPadding(spaceDP, 0, spaceDP, 0);
+                listView.setHorizontalSpacing(spaceDP);
+                listView.setVerticalSpacing(spaceDP);
+                listView.setVerticalScrollBarEnabled(false);
             }
         };
         gifAdapter = new GifAdapter(getActivity());
         commonGridView.setListAdapter(gifAdapter)
                 .setMListViewLinstener(this)
-                .setMProgressViewLinstener(this);
+                .setMProgressViewLinstener(this)
+                .setMoreEnable(true);
         return commonGridView.getRootContent();
     }
 
@@ -101,6 +102,7 @@ public class CategoryFragment extends BaseFragment implements MListView.MListVie
 
     @Override
     public void setData(GifPageResult data) {
+        commonGridView.setSecondaryProgressShown(false, data.hasNextPage());
         gifAdapter.setData(data);
     }
 
@@ -129,8 +131,8 @@ public class CategoryFragment extends BaseFragment implements MListView.MListVie
     }
 
     @Override
-    public void showSecondaryLoadingProgress(boolean visible) {
-        commonGridView.setSecondaryProgressShown(visible);
+    public void showSecondaryLoadingProgress(boolean visible, boolean hasMore) {
+        commonGridView.setSecondaryProgressShown(visible, hasMore);
     }
 
     @Override

@@ -91,7 +91,7 @@ public class CartoonPicturesController extends BaseUiController<CartoonPicturesC
         }
 
         if (event.secondary) {
-            ((CartoonPicturesProgressUi) ui).showSecondaryLoadingProgress(event.show);
+            ((CartoonPicturesProgressUi) ui).showSecondaryLoadingProgress(event.show, event.hasMore);
         } else {
             ((CartoonPicturesProgressUi) ui).showLoadingProgress(event.show);
         }
@@ -160,6 +160,9 @@ public class CartoonPicturesController extends BaseUiController<CartoonPicturesC
 
             @Override
             public void fetchSuCategoryGifList(CategoryInfo suCategortInfo, GifPageResult pageResult) {
+                if (!pageResult.hasNextPage()) {
+                    return;
+                }
                 apiService.fetchSuCategoryList(getId(ui), suCategortInfo, pageResult);
             }
 
@@ -189,7 +192,7 @@ public class CartoonPicturesController extends BaseUiController<CartoonPicturesC
 
         void showError(Exception e);
 
-        void showSecondaryLoadingProgress(boolean visible);
+        void showSecondaryLoadingProgress(boolean visible, boolean hasMore);
 
         void showRefreshProgress(boolean successOrFail);
     }

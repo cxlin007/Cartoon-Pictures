@@ -7,6 +7,7 @@ import com.cartoon.pictures.business.bean.CategoryInfo;
 import com.cartoon.pictures.business.common.Constants;
 import com.cartoon.pictures.business.controllers.CartoonPicturesController;
 import com.catoon.corelibrary.EvnManager;
+import com.facebook.drawee.backends.pipeline.Fresco;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,6 +24,7 @@ public class MainApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
+        Fresco.initialize(this);
         cartoonPicturesController = new CartoonPicturesController();
 
         initData();

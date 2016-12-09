@@ -44,7 +44,6 @@ public class ApiServiceImpl {
 
     public void fetchExpressionMain(final int callingId) {
         Observable<ResponseBody> call = serviceApi.fetchExpressionMain();
-        final int page = 1;
         Log.e(TAG, "fetchExpressionMain: " + Thread.currentThread().getId());
         call.subscribeOn(Schedulers.io())
                 .flatMap(new Func1<ResponseBody, Observable<List<CardInfo>>>() {
@@ -72,7 +71,7 @@ public class ApiServiceImpl {
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new ProgressSubscriber<List<CardInfo>>(bus, callingId, page) {
+                .subscribe(new ProgressSubscriber<List<CardInfo>>(bus, callingId) {
                     @Override
                     public void onNext(List<CardInfo> cardInfos) {
                         super.onNext(cardInfos);
@@ -112,6 +111,12 @@ public class ApiServiceImpl {
                         GifPageResult gifPageResult = HtmlParseUtil.parseGifInfoList(document);
                         gifPageResult.currPage = page;
                         Log.e(TAG, "onResponse: " + gifPageResult.toString());
+
+                        try {
+                            Thread.sleep(3000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
 
                         return gifPageResult;
                     }

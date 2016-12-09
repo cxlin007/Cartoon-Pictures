@@ -6,4 +6,6 @@
     <string name="release_to_refresh">释放立即刷新</string>
     <string name="refreshing">正在加载&#8230;</string>
     <string name="error_btn_text">点击重试</string>
+    <string name="loading_more">更多</string>
+    <string name="has_no_more">没有了</string>
 </resources>

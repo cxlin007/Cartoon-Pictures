@@ -1,5 +1,6 @@
 package com.cartoon.pictures.activities;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -20,6 +21,7 @@ import com.catoon.corelibrary.controllers.BaseUiController;
 import com.downloader.DownloaderManager;
 import com.downloader.IDownloaderLinstener;
 import com.downloader.bean.DownloaderInfo;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 
 public class GifDialogActivity extends BaseActivity implements IDownloaderLinstener {
@@ -40,33 +42,36 @@ public class GifDialogActivity extends BaseActivity implements IDownloaderLinste
     }
 
     private void bindDatas() {
-        ImageView imageView = (ImageView) findViewById(R.id.gif_img);
+
         final ProgressWheel progressWheel = (com.cartoon.pictures.uilibrary.widget.ProgressWheel) findViewById(R.id
                 .item_progress_wheel);
         final View imgLayout = findViewById(R.id.img_layout);
         final GifInfo gifInfo = getGifInfo();
-        Glide.with(this).load(gifInfo.getRemoteUrl()).diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .listener(new RequestListener<String, GlideDrawable>() {
+//        Glide.with(this).load(gifInfo.getRemoteUrl()).diskCacheStrategy(DiskCacheStrategy.SOURCE)
+//                .listener(new RequestListener<String, GlideDrawable>() {
+//
+//                    @Override
+//                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean
+//                            isFirstResource) {
+//                        progressWheel.setVisibility(View.GONE);
+//                        imgLayout.setVisibility(View.INVISIBLE);
+//                        return false;
+//                    }
+//
+//                    @Override
+//                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target,
+//                                                   boolean isFromMemoryCache, boolean isFirstResource) {
+//                        progressWheel.setVisibility(View.GONE);
+//                        imgLayout.setVisibility(View.VISIBLE);
+//                        return false;
+//                    }
+//                }).into
+//                (imageView);
+        SimpleDraweeView imageView = (SimpleDraweeView) findViewById(R.id.gif_img);
+        Uri uri = Uri.parse(gifInfo.getRemoteUrl());
+        imageView.setImageURI(uri);
 
-                    @Override
-                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean
-                            isFirstResource) {
-                        progressWheel.setVisibility(View.GONE);
-                        imgLayout.setVisibility(View.INVISIBLE);
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target,
-                                                   boolean isFromMemoryCache, boolean isFirstResource) {
-                        progressWheel.setVisibility(View.GONE);
-                        imgLayout.setVisibility(View.VISIBLE);
-                        return false;
-                    }
-                }).into
-                (imageView);
-
-        Button downBtn = (Button) findViewById(R.id.downloader);
+        ImageView downBtn = (ImageView) findViewById(R.id.download);
         downBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
