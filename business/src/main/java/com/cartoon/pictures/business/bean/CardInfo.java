@@ -13,7 +13,7 @@ public class CardInfo implements Serializable {
     private String remoteUrl;
     private String key;
 
-    private List<GifInfo> gifInfos;
+    private List<? extends GifInfo> gifInfos;
 
     public String getTitle() {
         return title;
@@ -23,11 +23,11 @@ public class CardInfo implements Serializable {
         this.title = title;
     }
 
-    public List<GifInfo> getGifInfos() {
+    public List<? extends GifInfo> getGifInfos() {
         return gifInfos;
     }
 
-    public void setGifInfos(List<GifInfo> gifInfos) {
+    public void setGifInfos(List<? extends GifInfo> gifInfos) {
         this.gifInfos = gifInfos;
     }
 

@@ -8,6 +8,7 @@ import com.bumptech.glide.util.Util;
 import com.cartoon.pictures.R;
 import com.cartoon.pictures.base.CommonViewHolder;
 import com.cartoon.pictures.business.bean.CardInfo;
+import com.cartoon.pictures.business.bean.GifInfo;
 import com.cartoon.pictures.business.controllers.CartoonPicturesController;
 import com.cartoon.pictures.common.Utils;
 import com.cartoon.pictures.widget.FixHeightGirdView;
@@ -51,7 +52,7 @@ public class CardAdapter extends ABasisAdapter<CartoonPicturesController.Cartoon
             gridLayout.setAdapter(adapter);
         }
         adapter.setCallBack(mCallBack);
-        adapter.setData(cardInfo.getGifInfos());
+        adapter.setData((List<GifInfo>) cardInfo.getGifInfos());
         ((ImageView) holder.getView(R.id.title_mark)).setBackgroundColor(mContext.getResources().getColor(R.color
                 .colorPrimary));
         ImageView imageView = (ImageView) holder.getView(R.id.title_mark);

@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import com.cartoon.pictures.adapters.GifAdapter;
 import com.cartoon.pictures.base.BaseFragment;
 import com.cartoon.pictures.business.bean.CategoryInfo;
+import com.cartoon.pictures.business.bean.EmotionPageResult;
 import com.cartoon.pictures.business.bean.GifPageResult;
 import com.cartoon.pictures.business.controllers.CartoonPicturesController;
 import com.cartoon.pictures.uilibrary.widget.GridViewWithHeaderAndFooter;
@@ -105,6 +106,7 @@ public class CategoryFragment extends BaseFragment implements MGridView.MListVie
         commonGridView.setSecondaryProgressShown(false, data.hasNextPage());
         gifAdapter.setData(data);
     }
+
 
     @Override
     public GifPageResult getGifPageResult() {

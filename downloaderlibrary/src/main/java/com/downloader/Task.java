@@ -13,12 +13,12 @@ public class Task extends Loader {
 
     private ArrayList<IDownloaderLinstener> linsteners = new ArrayList<>();
 
-    public Task(DownloaderInfo downloaderInfo, MulLoader mulLoader) {
-        super(downloaderInfo, mulLoader);
+    public Task(DownloaderInfo downloaderInfo, MulLoader mulLoader,DownloaderManager downloaderManager) {
+        super(downloaderInfo, mulLoader,downloaderManager);
     }
 
-    public Task(DownloaderInfo downloaderInfo, IDownloaderLinstener linstener, MulLoader mulLoader) {
-        super(downloaderInfo, mulLoader);
+    public Task(DownloaderInfo downloaderInfo, IDownloaderLinstener linstener, MulLoader mulLoader,DownloaderManager downloaderManager) {
+        super(downloaderInfo, mulLoader,downloaderManager);
         addLinstener(linstener);
     }
 
@@ -40,9 +40,9 @@ public class Task extends Loader {
     }
 
     @Override
-    protected void notifyError(Exception ex) {
+    protected void notifyError(DownloadException ex) {
         for (IDownloaderLinstener linstener : linsteners) {
-            linstener.downloaderPause();
+            linstener.downloaderError(ex);
         }
     }
 

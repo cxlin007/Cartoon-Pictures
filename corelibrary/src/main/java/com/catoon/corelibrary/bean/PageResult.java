@@ -20,4 +20,12 @@ public abstract class PageResult<T> implements Serializable {
         return !(currPage >= totalPage);
     }
 
+    @Override
+    public String toString() {
+        return "PageResult{" +
+                "items=" + items +
+                ", totalPage=" + totalPage +
+                ", currPage=" + currPage +
+                '}';
+    }
 }

@@ -4,9 +4,12 @@ import android.app.Activity;
 import android.content.Intent;
 
 import com.cartoon.pictures.activities.CategoryActivity;
+import com.cartoon.pictures.activities.EmotionActivity;
 import com.cartoon.pictures.activities.GifDialogActivity;
+import com.cartoon.pictures.activities.SuEmotionActivity;
 import com.cartoon.pictures.business.BDisplay;
 import com.cartoon.pictures.business.bean.CardInfo;
+import com.cartoon.pictures.business.bean.EmotionInfo;
 import com.cartoon.pictures.business.bean.GifInfo;
 
 /**
@@ -32,6 +35,20 @@ public class AndroidDisplay implements BDisplay {
     public void showCategoryActivity(CardInfo cardInfo) {
         Intent intent = new Intent(activity,CategoryActivity.class);
         intent.putExtra("info",cardInfo);
+        activity.startActivity(intent);
+    }
+
+    @Override
+    public void showEmotionActivity(CardInfo cardInfo) {
+        Intent intent = new Intent(activity,EmotionActivity.class);
+        intent.putExtra("info",cardInfo);
+        activity.startActivity(intent);
+    }
+
+    @Override
+    public void showSuEmotionActivity(EmotionInfo emotionInfo) {
+        Intent intent = new Intent(activity,SuEmotionActivity.class);
+        intent.putExtra("info",emotionInfo);
         activity.startActivity(intent);
     }
 }

@@ -6,8 +6,9 @@ import com.cartoon.pictures.business.BusinessManager;
 import com.cartoon.pictures.business.bean.CategoryInfo;
 import com.cartoon.pictures.business.common.Constants;
 import com.cartoon.pictures.business.controllers.CartoonPicturesController;
-import com.catoon.corelibrary.EvnManager;
-import com.facebook.drawee.backends.pipeline.Fresco;
+import com.cartoon.pictures.downloader.CartoonDownloaderLinstener;
+import com.downloader.DownloaderManager;
+import com.downloader.IDownloaderLinstener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,23 +17,28 @@ import java.util.List;
 /**
  * Created by chenxunlin01 on 2016/11/14.
  */
-public class MainApplication extends Application {
+public class MainApplication extends Application{
 
     private CartoonPicturesController cartoonPicturesController;
+
+    public static final String DOWNLOADER_DIR = "cartoon-download";
 
     @Override
     public void onCreate() {
         super.onCreate();
-
-        Fresco.initialize(this);
         cartoonPicturesController = new CartoonPicturesController();
-
+        initConfig();
         initData();
     }
 
     public CartoonPicturesController getCartoonPicturesController() {
         return cartoonPicturesController;
     }
+
+    private void initConfig() {
+        DownloaderManager.instance().setDownloaderDir(DOWNLOADER_DIR);
+    }
+
 
     private void initData() {
         //初始化数据

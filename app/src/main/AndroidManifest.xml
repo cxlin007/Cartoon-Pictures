@@ -33,6 +33,14 @@
         <activity android:name=".activities.CategoryActivity"
                   android:screenOrientation="portrait"
                   android:theme="@style/AppTheme.NoActionBar"/>
+
+        <activity android:name=".activities.EmotionActivity"
+                  android:screenOrientation="portrait"
+                  android:theme="@style/AppTheme.NoActionBar"/>
+
+        <activity android:name=".activities.SuEmotionActivity"
+                  android:screenOrientation="portrait"
+                  android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

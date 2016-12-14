@@ -17,4 +17,10 @@ public interface ApiService {
     @GET("http://qq.yh31.com/{page}")
     Observable<ResponseBody> fetchSuCategoryList(@Path("page") String page);
 
+    @GET("http://qq.yh31.com/{page}")
+    Observable<ResponseBody> fetchSuEmotionList(@Path("page") String page);
+
+    @GET("http://qq.yh31.com/{page}")
+    Observable<ResponseBody> fetchEmotionList(@Path("page") String page);
+
 }

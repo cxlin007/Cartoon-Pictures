@@ -6,6 +6,8 @@ import com.cartoon.pictures.business.BusinessManager;
 import com.cartoon.pictures.business.ProgressSubscriber;
 import com.cartoon.pictures.business.bean.CardInfo;
 import com.cartoon.pictures.business.bean.CategoryInfo;
+import com.cartoon.pictures.business.bean.EmotionInfo;
+import com.cartoon.pictures.business.bean.EmotionPageResult;
 import com.cartoon.pictures.business.bean.GifPageResult;
 import com.cartoon.pictures.business.common.HtmlParseUtil;
 import com.cartoon.pictures.business.state.CartoonPicturesState;
@@ -112,12 +114,6 @@ public class ApiServiceImpl {
                         gifPageResult.currPage = page;
                         Log.e(TAG, "onResponse: " + gifPageResult.toString());
 
-                        try {
-                            Thread.sleep(3000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-
                         return gifPageResult;
                     }
                 })
@@ -127,6 +123,96 @@ public class ApiServiceImpl {
                     public void onNext(GifPageResult gifPageResult) {
                         super.onNext(gifPageResult);
                         bus.post(new CartoonPicturesState.CartoonPicturesSuCategoryListChanged(callingId,
+                                gifPageResult));
+                    }
+                });
+    }
+
+    public void fetchEmotionList(final int callingId, CardInfo cardInfo, EmotionPageResult
+            currPageResult) {
+        if (currPageResult != null && !currPageResult.hasNextPage()) {
+            return;
+        }
+
+        final int page = currPageResult == null ? 1 : currPageResult.nextPage();
+        String path = "";
+        if (page == 1) {
+            path = cardInfo.getKey();
+        } else {
+            path = cardInfo.getKey() + "List_" + currPageResult.nextPage() + ".html";
+        }
+        Observable<ResponseBody> call = serviceApi.fetchEmotionList(path);
+        call.subscribeOn(Schedulers.io())
+                .map(new Func1<ResponseBody, EmotionPageResult>() {
+
+                    @Override
+                    public EmotionPageResult call(ResponseBody responseBody) {
+                        String str = null;
+                        try {
+                            str = new String(responseBody.bytes(), "UTF-8");
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        Document document = Jsoup.parse(str);
+                        //解析分类
+                        EmotionPageResult gifPageResult = HtmlParseUtil.parseEmotionList(document);
+                        gifPageResult.currPage = page;
+                        Log.e(TAG, "onResponse: " + gifPageResult.toString());
+
+                        return gifPageResult;
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new ProgressSubscriber<EmotionPageResult>(bus, callingId, page) {
+                    @Override
+                    public void onNext(EmotionPageResult gifPageResult) {
+                        super.onNext(gifPageResult);
+                        bus.post(new CartoonPicturesState.CartoonPicturesEmotionListChanged(callingId,
+                                gifPageResult));
+                    }
+                });
+    }
+
+    public void fetchSuEmotionList(final int callingId, EmotionInfo emotionInfo, GifPageResult currPageResult) {
+        if (currPageResult != null && !currPageResult.hasNextPage()) {
+            return;
+        }
+        final int page = currPageResult == null ? 1 : currPageResult.nextPage();
+        String path = "";
+        if (page == 1) {
+            path = emotionInfo.getKey();
+        } else {
+            path = emotionInfo.getKey().replace(".html", "_" + page + ".html");
+        }
+        Observable<ResponseBody> call = serviceApi.fetchSuEmotionList(path);
+        call.subscribeOn(Schedulers.io())
+                .map(new Func1<ResponseBody, GifPageResult>() {
+
+                    @Override
+                    public GifPageResult call(ResponseBody responseBody) {
+                        String str = null;
+                        try {
+                            str = new String(responseBody.bytes(), "UTF-8");
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        Document document = Jsoup.parse(str);
+                        //解析分类
+                        GifPageResult gifPageResult = HtmlParseUtil.parseSuEmotionList(document);
+                        gifPageResult.currPage = page;
+                        Log.e(TAG, "onResponse: " + gifPageResult.toString());
+
+                        return gifPageResult;
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new ProgressSubscriber<GifPageResult>(bus, callingId, page) {
+                    @Override
+                    public void onNext(GifPageResult gifPageResult) {
+                        super.onNext(gifPageResult);
+                        bus.post(new CartoonPicturesState.CartoonPicturesSuEmotionListChanged(callingId,
                                 gifPageResult));
                     }
                 });

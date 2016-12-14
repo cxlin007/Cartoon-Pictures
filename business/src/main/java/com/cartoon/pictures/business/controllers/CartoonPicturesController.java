@@ -1,11 +1,15 @@
 package com.cartoon.pictures.business.controllers;
 
+import android.util.Log;
+
 import com.cartoon.pictures.business.BDisplay;
 import com.cartoon.pictures.business.BusinessManager;
 import com.cartoon.pictures.business.api.ApiServiceImpl;
 import com.cartoon.pictures.business.bean.CardInfo;
 import com.cartoon.pictures.business.bean.CategoryInfo;
+import com.cartoon.pictures.business.bean.EmotionInfo;
 import com.cartoon.pictures.business.bean.GifInfo;
+import com.cartoon.pictures.business.bean.EmotionPageResult;
 import com.cartoon.pictures.business.bean.GifPageResult;
 import com.cartoon.pictures.business.bean.ImageDetailInfo;
 import com.cartoon.pictures.business.state.CartoonPicturesState;
@@ -49,7 +53,14 @@ public class CartoonPicturesController extends BaseUiController<CartoonPicturesC
             fetchExpressionMainIfNeed(getId(ui));
         } else if (ui instanceof CartoonPicturesSuCategoryUi) {
             fetchCartoonPicturesSuCategoryIfNeed((CartoonPicturesSuCategoryUi) ui);
+        } else if (ui instanceof CartoonPicturesEmotionUi) {
+            apiService.fetchEmotionList(getId(ui), ((CartoonPicturesEmotionUi) ui).getCardInfo(), (
+                    (CartoonPicturesEmotionUi) ui).getGifPageResult());
+        } else if (ui instanceof CartoonPicturesSuEmotionUi) {
+            apiService.fetchSuEmotionList(getId(ui), ((CartoonPicturesSuEmotionUi) ui).getEmotionInfo(), (
+                    (CartoonPicturesSuEmotionUi) ui).getGifPageResult());
         }
+
     }
 
     private void fetchExpressionMainIfNeed(int callingId) {
@@ -119,6 +130,29 @@ public class CartoonPicturesController extends BaseUiController<CartoonPicturesC
     }
 
     @Subscribe
+    public void onCartoonPicturesEmotionListChanged(CartoonPicturesState.CartoonPicturesEmotionListChanged
+                                                            event) {
+        CartoonPicturesEmotionUi ui = (CartoonPicturesEmotionUi) findUi(event.mCallingId);
+
+        if (ui == null) {
+            return;
+        }
+
+        ui.setData(event.pageResult);
+    }
+
+    @Subscribe
+    public void onCartoonPicturesSuEmotionListChanged(CartoonPicturesState.CartoonPicturesSuEmotionListChanged
+                                                              event) {
+        CartoonPicturesSuEmotionUi ui = (CartoonPicturesSuEmotionUi) findUi(event.mCallingId);
+        if (ui == null) {
+            return;
+        }
+
+        ui.setData(event.pageResult);
+    }
+
+    @Subscribe
     public void onShowErrorEvent(CartoonPicturesState.ShowErrorEvent event) {
         CartoonPicturesUi ui = (CartoonPicturesUi) findUi(event.mCallingId);
         if (ui == null || !(ui instanceof CartoonPicturesProgressUi)) {
@@ -144,6 +178,12 @@ public class CartoonPicturesController extends BaseUiController<CartoonPicturesC
                 } else if (ui instanceof CartoonPicturesSuCategoryUi) {
                     apiService.fetchSuCategoryList(getId(ui), ((CartoonPicturesSuCategoryUi) ui).getSuCategoryInfo(), (
                             (CartoonPicturesSuCategoryUi) ui).getGifPageResult());
+                } else if (ui instanceof CartoonPicturesEmotionUi) {
+                    apiService.fetchEmotionList(getId(ui), ((CartoonPicturesEmotionUi) ui).getCardInfo(), (
+                            (CartoonPicturesEmotionUi) ui).getGifPageResult());
+                } else if (ui instanceof CartoonPicturesSuEmotionUi) {
+                    apiService.fetchSuEmotionList(getId(ui), ((CartoonPicturesSuEmotionUi) ui).getEmotionInfo(), (
+                            (CartoonPicturesSuEmotionUi) ui).getGifPageResult());
                 }
             }
 
@@ -154,8 +194,17 @@ public class CartoonPicturesController extends BaseUiController<CartoonPicturesC
             }
 
             @Override
+            public void onEmotionItemClick(EmotionInfo emotionInfo) {
+                ((BDisplay) getDisplay()).showSuEmotionActivity(emotionInfo);
+            }
+
+            @Override
             public void onCardItemMoreClick(CardInfo cardInfo) {
-                ((BDisplay) getDisplay()).showCategoryActivity(cardInfo);
+                if (cardInfo.getKey().equals("/zjbq/")) {
+                    ((BDisplay) getDisplay()).showEmotionActivity(cardInfo);
+                } else {
+                    ((BDisplay) getDisplay()).showCategoryActivity(cardInfo);
+                }
             }
 
             @Override
@@ -176,6 +225,8 @@ public class CartoonPicturesController extends BaseUiController<CartoonPicturesC
         public void onErrorRetry();
 
         public void onGifItemClick(GifInfo gifInfo);
+
+        public void onEmotionItemClick(EmotionInfo emotionInfo);
 
         public void onCardItemMoreClick(CardInfo cardInfo);
 
@@ -214,6 +265,22 @@ public class CartoonPicturesController extends BaseUiController<CartoonPicturesC
 
         CategoryInfo getSuCategoryInfo();
 
+    }
+
+    public interface CartoonPicturesEmotionUi extends CartoonPicturesProgressUi {
+        void setData(EmotionPageResult data);
+
+        EmotionPageResult getGifPageResult();
+
+        CardInfo getCardInfo();
+    }
+
+    public interface CartoonPicturesSuEmotionUi extends CartoonPicturesProgressUi {
+        void setData(GifPageResult data);
+
+        GifPageResult getGifPageResult();
+
+        EmotionInfo getEmotionInfo();
     }
 
     public interface CartoonPicturesDetailUi extends CartoonPicturesProgressUi {

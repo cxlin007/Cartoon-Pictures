@@ -10,7 +10,7 @@ public class DownloaderManager {
 
 
     private MulLoader mulLoader;
-
+    private String downloaderDir = Constant.DOWN_DIR;
     private static DownloaderManager downloaderManager;
 
     public static DownloaderManager instance() {
@@ -22,7 +22,15 @@ public class DownloaderManager {
     }
 
     private DownloaderManager() {
-        mulLoader = new MulLoader();
+        mulLoader = new MulLoader(this);
+    }
+
+    public void setDownloaderDir(String dir){
+        downloaderDir = dir;
+    }
+
+    public String getDownloaderDir() {
+        return downloaderDir;
     }
 
     public void start(DownloaderInfo info, IDownloaderLinstener downloaderLinstener) {

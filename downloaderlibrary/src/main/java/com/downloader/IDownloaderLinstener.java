@@ -8,7 +8,7 @@ public interface IDownloaderLinstener {
 
     public void downloaderPause();
 
-    public void downloaderError(Exception ex);
+    public void downloaderError(DownloadException ex);
 
     public void downloaderSuccess();
 

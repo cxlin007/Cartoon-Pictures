@@ -49,9 +49,11 @@ public class MulLoader {
     private ConcurrentHashMap pausePool = new ConcurrentHashMap();
 
     private int maxLoadingSize = 3;
+    private DownloaderManager downloaderManager;
 
 
-    public MulLoader() {
+    public MulLoader(DownloaderManager downloaderManager) {
+        this.downloaderManager = downloaderManager;
     }
 
     public void start(DownloaderInfo info, final IDownloaderLinstener downloaderLinstener) throws Exception {
@@ -65,11 +67,13 @@ public class MulLoader {
             throw new Exception("DownloaderLinstener is null");
         }
 
-        Task task = new Task(info, downloaderLinstener, this);
+        Task task = new Task(info, downloaderLinstener, this,downloaderManager);
 
         //判断有没在队列中
         if (preparePool.contains(task) || loadingPool.contains(task)) {
-            downloaderLinstener.downloaderError(new Exception("haved a task in pool"));
+            DownloadException downloadException = new DownloadException();
+            downloadException.setMsg("haved a task in pool");
+            downloaderLinstener.downloaderError(downloadException);
             return;
         }
 
@@ -90,7 +94,7 @@ public class MulLoader {
             throw new Exception("DownloaderInfo is null");
         }
 
-        Task mTask = (Task) loadingPool.get(new Task(info, this).getId());
+        Task mTask = (Task) loadingPool.get(new Task(info, this,downloaderManager).getId());
         if (mTask != null) {
             mTask.setStop(true);
         }
@@ -102,7 +106,7 @@ public class MulLoader {
             throw new Exception("DownloaderInfo is null");
         }
 
-        Task mTask = (Task) pausePool.get(new Task(info, this).getId());
+        Task mTask = (Task) pausePool.get(new Task(info, this,downloaderManager).getId());
         if (mTask != null) {
             mTask.setStop(false);
             loadingPool.put(mTask.getId(), mTask);

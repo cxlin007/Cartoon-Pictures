@@ -47,9 +47,11 @@ public abstract class ProgressSubscriber<T> extends Subscriber<T> {
 
     @Override
     public void onError(Throwable e) {
-        Log.e(TAG, "onError: " + Thread.currentThread().getId());
+        e.printStackTrace();
+        Log.e(TAG, "onError: " + Thread.currentThread().getId()+"-"+e.getMessage());
         if (page == 1) {
             bus.post(new CartoonPicturesState.ShowErrorEvent(callingId));
+            Log.e(TAG, "showError: " );
         } else {
             bus.post(createPageLoadingProgressEvent(callingId, false, page, totlePage));
         }

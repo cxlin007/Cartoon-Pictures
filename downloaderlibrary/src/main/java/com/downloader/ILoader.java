@@ -18,7 +18,7 @@ public interface ILoader {
     //下咋暂停
     public void onPause();
     //下载异常
-    public void onError(Exception ex);
+    public void onError(DownloadException ex);
     //下载成功
     public void onSuccess();
     //下载完成

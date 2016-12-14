@@ -50,13 +50,15 @@ public abstract class Loader implements ILoader, Runnable {
     protected DownloaderInfo info;
     private DownloaderLinstenerHandler handler;
     private MulLoader mulLoader;
+    private DownloaderManager downloaderManager;
 
     // 当前要跳过的字节
     protected long skipSize;
 
-    public Loader(DownloaderInfo info, MulLoader mulLoader) {
+    public Loader(DownloaderInfo info, MulLoader mulLoader, DownloaderManager downloaderManager) {
         this.id = info.getId();
         this.info = info;
+        this.downloaderManager = downloaderManager;
         handler = new DownloaderLinstenerHandler(this);
         this.mulLoader = mulLoader;
     }
@@ -102,7 +104,10 @@ public abstract class Loader implements ILoader, Runnable {
 
             int code = mConnection.getResponseCode();
             if (code != HttpURLConnection.HTTP_OK && code != HttpURLConnection.HTTP_PARTIAL) {
-                throw new Exception("http response error " + code);
+                DownloadException downloadException = new DownloadException();
+                downloadException.setMsg("http response error " + code);
+                downloadException.setHttpCode(code);
+                throw downloadException;
             }
 
             long fileSize = mConnection.getContentLength() + skipSize;
@@ -128,8 +133,14 @@ public abstract class Loader implements ILoader, Runnable {
 
         } catch (Exception e) {
             e.printStackTrace();
-            onError(e);
-
+            if (e instanceof DownloadException) {
+                onError((DownloadException) e);
+            } else {
+                DownloadException ex = new DownloadException();
+                ex.setStackTrace(e.getStackTrace());
+                ex.setMsg(e.getMessage());
+                onError((DownloadException) e);
+            }
         } finally {
             try {
                 if (inputStream != null) {
@@ -159,7 +170,7 @@ public abstract class Loader implements ILoader, Runnable {
     }
 
     @Override
-    public void onError(Exception ex) {
+    public void onError(DownloadException ex) {
         Log.e(TAG, "onError: " + ex.toString());
 
         status = Status.ERROR;
@@ -233,7 +244,8 @@ public abstract class Loader implements ILoader, Runnable {
     }
 
     private File getDownloadFile(String url) {
-        String dir = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + Constant.DOWN_DIR
+        String dir = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + downloaderManager
+                .getDownloaderDir()
                 + File.separator;
         int suffixIndex = url.lastIndexOf('.');
         String path = dir + url.hashCode() + url.substring(suffixIndex);
@@ -257,7 +269,7 @@ public abstract class Loader implements ILoader, Runnable {
 
     abstract protected void notifyProgress(int progress);
 
-    abstract protected void notifyError(Exception ex);
+    abstract protected void notifyError(DownloadException ex);
 
     abstract protected void notifyPause();
 
@@ -284,7 +296,7 @@ public abstract class Loader implements ILoader, Runnable {
                     loader.notifyProgress(msg.arg1);
                     break;
                 case LOADER_STATUS_ERROR:
-                    loader.notifyError((Exception) msg.obj);
+                    loader.notifyError((DownloadException) msg.obj);
                     break;
                 case LOADER_STATUS_SUCCESS:
                     loader.notifySuccess();

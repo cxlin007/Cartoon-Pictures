@@ -5,39 +5,38 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.util.Util;
 import com.cartoon.pictures.R;
 import com.cartoon.pictures.base.CommonViewHolder;
-import com.cartoon.pictures.business.bean.CardInfo;
-import com.cartoon.pictures.business.bean.EmotionInfo;
+import com.cartoon.pictures.business.bean.EmotionPageResult;
 import com.cartoon.pictures.business.bean.GifInfo;
+import com.cartoon.pictures.business.bean.GifPageResult;
 import com.cartoon.pictures.business.controllers.CartoonPicturesController;
 import com.catoon.corelibrary.common.Utils;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Created by chenxunlin01 on 2016/11/14.
  */
-public class CardGridAdapter extends ABasisAdapter<CartoonPicturesController.CartoonPicturesUiCallbacks, GifInfo> {
+public class SuEmotionGridAdapter extends ABasisAdapter<CartoonPicturesController.CartoonPicturesUiCallbacks, GifInfo> {
 
-    private static final int MAX_SIZE = 3;
+    private GifPageResult gifPageResult;
 
-    public CardGridAdapter(Context context) {
-        super(context, R.layout.gif_item);
+    public SuEmotionGridAdapter(Context context) {
+        super(context, R.layout.suemotion_gif_item);
     }
 
-    public void setData(List<GifInfo> data) {
-        if (data != null) {
-            this.data = data;
+    public void setData(GifPageResult gifPageResult) {
+        this.gifPageResult = gifPageResult;
+        if(data == null){
+            data = new ArrayList<>();
         }
+        data.addAll(gifPageResult.items);
         notifyDataSetChanged();
     }
 
-    @Override
-    public int getCount() {
-        int count = super.getCount();
-        return count > MAX_SIZE ? MAX_SIZE : count;
+    public GifPageResult getGifPageResult() {
+        return gifPageResult;
     }
 
     @Override
@@ -46,16 +45,11 @@ public class CardGridAdapter extends ABasisAdapter<CartoonPicturesController.Car
         String url = gifInfo.getRemoteUrl();
         Glide.with(mContext).load(url).asBitmap()
                 .into((ImageView) holder.getView(R.id.photoView));
-        holder.setText(R.id.des, gifInfo.getDes());
         holder.getView(R.id.gif_tag).setVisibility(Utils.isGif(url) ? View.VISIBLE : View.GONE);
         holder.setOnItemClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(gifInfo instanceof EmotionInfo){
-                    mCallBack.onEmotionItemClick((EmotionInfo) gifInfo);
-                }else{
-                    mCallBack.onGifItemClick(gifInfo);
-                }
+                mCallBack.onGifItemClick(gifInfo);
             }
         });
     }

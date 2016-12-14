@@ -8,19 +8,17 @@ import com.bumptech.glide.Glide;
 import com.cartoon.pictures.R;
 import com.cartoon.pictures.base.CommonViewHolder;
 import com.cartoon.pictures.business.bean.GifInfo;
+import com.cartoon.pictures.business.bean.EmotionPageResult;
 import com.cartoon.pictures.business.bean.GifPageResult;
 import com.cartoon.pictures.business.controllers.CartoonPicturesController;
 import com.catoon.corelibrary.common.Utils;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by chenxunlin01 on 2016/11/14.
  */
-public class GifAdapter extends ABasisAdapter<CartoonPicturesController.CartoonPicturesUiCallbacks, GifInfo> {
-
-    private GifPageResult gifPageResult;
+public class GifAdapter extends APageBasisAdapter<CartoonPicturesController.CartoonPicturesUiCallbacks, GifInfo,GifPageResult> {
 
     public GifAdapter(Context context) {
         super(context, R.layout.sucategory_gif_item);
@@ -33,10 +31,6 @@ public class GifAdapter extends ABasisAdapter<CartoonPicturesController.CartoonP
         }
         data.addAll(gifPageResult.items);
         notifyDataSetChanged();
-    }
-
-    public GifPageResult getGifPageResult() {
-        return gifPageResult;
     }
 
     @Override

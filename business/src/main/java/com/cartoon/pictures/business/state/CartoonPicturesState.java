@@ -3,11 +3,9 @@ package com.cartoon.pictures.business.state;
 import com.cartoon.pictures.business.BusinessManager;
 import com.cartoon.pictures.business.bean.CardInfo;
 import com.cartoon.pictures.business.bean.CategoryInfo;
+import com.cartoon.pictures.business.bean.EmotionPageResult;
 import com.cartoon.pictures.business.bean.GifPageResult;
 import com.cartoon.pictures.business.bean.ImageDetailInfo;
-import com.cartoon.pictures.business.bean.ImageInfo;
-import com.cartoon.pictures.business.bean.PageInfo;
-import com.catoon.corelibrary.EvnManager;
 import com.squareup.otto.Bus;
 
 import java.util.HashMap;
@@ -104,6 +102,26 @@ public class CartoonPicturesState {
         public final GifPageResult pageResult;
 
         public CartoonPicturesSuCategoryListChanged(int mCallingId, GifPageResult pageResult) {
+            this.mCallingId = mCallingId;
+            this.pageResult = pageResult;
+        }
+    }
+
+    public static class CartoonPicturesEmotionListChanged {
+        public final int mCallingId;
+        public final EmotionPageResult pageResult;
+
+        public CartoonPicturesEmotionListChanged(int mCallingId, EmotionPageResult pageResult) {
+            this.mCallingId = mCallingId;
+            this.pageResult = pageResult;
+        }
+    }
+
+    public static class CartoonPicturesSuEmotionListChanged {
+        public final int mCallingId;
+        public final GifPageResult pageResult;
+
+        public CartoonPicturesSuEmotionListChanged(int mCallingId, GifPageResult pageResult) {
             this.mCallingId = mCallingId;
             this.pageResult = pageResult;
         }
