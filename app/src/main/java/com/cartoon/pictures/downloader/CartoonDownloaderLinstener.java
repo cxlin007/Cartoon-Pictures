@@ -49,7 +49,7 @@ public class CartoonDownloaderLinstener implements IDownloaderLinstener {
     public void downloaderProgressChange(int progress) {
         if(!isToastLoading){
             Toast.makeText(mContext, R.string.downloader_doing_toast, Toast.LENGTH_SHORT).show();
-            isToastLoading = false;
+            isToastLoading = true;
         }
     }
 }

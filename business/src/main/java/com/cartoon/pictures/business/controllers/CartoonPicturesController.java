@@ -215,6 +215,24 @@ public class CartoonPicturesController extends BaseUiController<CartoonPicturesC
                 apiService.fetchSuCategoryList(getId(ui), suCategortInfo, pageResult);
             }
 
+            @Override
+            public void fetchEmotionList(CardInfo cardInfo, EmotionPageResult pageResult) {
+                if (!pageResult.hasNextPage()) {
+                    return;
+                }
+
+                apiService.fetchEmotionList(getId(ui), cardInfo, pageResult);
+            }
+
+            @Override
+            public void fetchSuEmotionList(EmotionInfo emotionInfo, GifPageResult pageResult) {
+                if (!pageResult.hasNextPage()) {
+                    return;
+                }
+
+                apiService.fetchSuEmotionList(getId(ui), emotionInfo, pageResult);
+            }
+
         };
     }
 
@@ -231,6 +249,10 @@ public class CartoonPicturesController extends BaseUiController<CartoonPicturesC
         public void onCardItemMoreClick(CardInfo cardInfo);
 
         public void fetchSuCategoryGifList(CategoryInfo suCategortInfo, GifPageResult pageResult);
+
+        public void fetchEmotionList(CardInfo cardInfo, EmotionPageResult pageResult);
+
+        public void fetchSuEmotionList(EmotionInfo emotionInfo, GifPageResult pageResult);
 
     }
 

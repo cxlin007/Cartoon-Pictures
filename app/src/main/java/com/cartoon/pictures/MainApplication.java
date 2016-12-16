@@ -6,9 +6,7 @@ import com.cartoon.pictures.business.BusinessManager;
 import com.cartoon.pictures.business.bean.CategoryInfo;
 import com.cartoon.pictures.business.common.Constants;
 import com.cartoon.pictures.business.controllers.CartoonPicturesController;
-import com.cartoon.pictures.downloader.CartoonDownloaderLinstener;
 import com.downloader.DownloaderManager;
-import com.downloader.IDownloaderLinstener;
 
 import java.util.ArrayList;
 import java.util.HashMap;

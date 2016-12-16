@@ -118,7 +118,7 @@ public class ApiServiceImpl {
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new ProgressSubscriber<GifPageResult>(bus, callingId, page) {
+                .subscribe(new ProgressSubscriber<GifPageResult>(bus, callingId, currPageResult) {
                     @Override
                     public void onNext(GifPageResult gifPageResult) {
                         super.onNext(gifPageResult);
@@ -164,7 +164,7 @@ public class ApiServiceImpl {
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new ProgressSubscriber<EmotionPageResult>(bus, callingId, page) {
+                .subscribe(new ProgressSubscriber<EmotionPageResult>(bus, callingId, currPageResult) {
                     @Override
                     public void onNext(EmotionPageResult gifPageResult) {
                         super.onNext(gifPageResult);
@@ -208,7 +208,7 @@ public class ApiServiceImpl {
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new ProgressSubscriber<GifPageResult>(bus, callingId, page) {
+                .subscribe(new ProgressSubscriber<GifPageResult>(bus, callingId, currPageResult) {
                     @Override
                     public void onNext(GifPageResult gifPageResult) {
                         super.onNext(gifPageResult);

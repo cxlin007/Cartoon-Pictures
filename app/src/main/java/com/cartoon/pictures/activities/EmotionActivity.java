@@ -12,11 +12,13 @@ import com.cartoon.pictures.business.bean.CardInfo;
 import com.cartoon.pictures.business.bean.EmotionPageResult;
 import com.cartoon.pictures.business.controllers.CartoonPicturesController;
 import com.cartoon.pictures.uilibrary.widget.GridViewWithHeaderAndFooter;
+import com.cartoon.pictures.uilibrary.widget.MGridView;
 import com.cartoon.pictures.uilibrary.widget.MProgressView;
 import com.cartoon.pictures.widget.CommonGridView;
 import com.catoon.corelibrary.common.Utils;
 
-public class EmotionActivity extends BaseActivity implements CartoonPicturesController.CartoonPicturesEmotionUi,MProgressView.MProgressViewLinstener {
+public class EmotionActivity extends BaseActivity implements CartoonPicturesController.CartoonPicturesEmotionUi,
+        MProgressView.MProgressViewLinstener, MGridView.MListViewLinstener {
 
     private int line = 8;
 
@@ -47,7 +49,9 @@ public class EmotionActivity extends BaseActivity implements CartoonPicturesCont
             }
         };
         commonGridView.setListAdapter(emotionGridAdapter)
-        .setMProgressViewLinstener(this);
+                .setMProgressViewLinstener(this)
+                .setMListViewLinstener(this)
+                .setMoreEnable(true);
         ((ViewGroup) findViewById(R.id.root_layout)).addView(commonGridView.getRootContent());
     }
 
@@ -116,5 +120,10 @@ public class EmotionActivity extends BaseActivity implements CartoonPicturesCont
     @Override
     public void onErrorRetry() {
         mCallbacks.onErrorRetry();
+    }
+
+    @Override
+    public void onScrollToBottom() {
+        mCallbacks.fetchEmotionList(getCardInfo(), getGifPageResult());
     }
 }

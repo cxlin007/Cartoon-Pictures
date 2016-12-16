@@ -15,7 +15,7 @@ public class Utils {
         int count = marks.length;
         if (position < 0 || position >= count) {
             Random random = new Random();
-            position = random.nextInt(10);
+            position = random.nextInt(9);
         }
         return marks[position];
     }

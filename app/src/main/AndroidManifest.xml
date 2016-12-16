@@ -41,6 +41,10 @@
         <activity android:name=".activities.SuEmotionActivity"
                   android:screenOrientation="portrait"
                   android:theme="@style/AppTheme.NoActionBar"/>
+
+        <meta-data
+            android:name="com.cartoon.pictures.glide.OkHttpProgressGlideModule"
+            android:value="GlideModule" />
     </application>
 
 </manifest>

@@ -20,10 +20,11 @@ public abstract class ProgressSubscriber<T> extends Subscriber<T> {
     private final int page;
     private int totlePage = 1;
 
-    public ProgressSubscriber(Bus bus, int callingId, int page) {
+    public ProgressSubscriber(Bus bus, int callingId, PageResult pageResult) {
         this.bus = bus;
         this.callingId = callingId;
-        this.page = page;
+        this.page = pageResult == null ? 1 : pageResult.nextPage();
+        this.totlePage = pageResult == null ? 1 : pageResult.totalPage;
     }
 
     public ProgressSubscriber(Bus bus, int callingId) {

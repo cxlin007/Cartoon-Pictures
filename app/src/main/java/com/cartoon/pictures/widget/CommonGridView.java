@@ -1,6 +1,7 @@
 package com.cartoon.pictures.widget;
 
 import android.app.Activity;
+import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
