@@ -66,24 +66,44 @@ public class CircleProgressDrawable extends Drawable {
 
     private static class Ring {
 
+        private Paint bgPaint;
+        private Paint borderPaint;
         private Paint mPaint;
         private int progress;
         private final Callback mCallback;
 
         public Ring(Callback callback) {
             this.mCallback = callback;
+            bgPaint = new Paint();
+            bgPaint.setAntiAlias(true);
+            bgPaint.setStyle(Paint.Style.FILL);
+            bgPaint.setColor(0x88616161);
+
+            borderPaint = new Paint();
+            borderPaint.setAntiAlias(true);
+            borderPaint.setStyle(Paint.Style.STROKE);
+            borderPaint.setColor(0xddffffff);
+            borderPaint.setStrokeWidth(2);
+
             mPaint = new Paint();
             mPaint.setAntiAlias(true);
             mPaint.setStyle(Paint.Style.FILL);
-            mPaint.setColor(0x88616161);
+            mPaint.setColor(0xddffffff);
         }
 
         public void draw(Canvas c, Rect bounds) {
-            int space = 16;
-            RectF rectF = new RectF(bounds.left + space, bounds.top + space, bounds.right - space, bounds.bottom +
+            c.drawCircle((float) (bounds.left + bounds.right) / 2, (float) (bounds.top + bounds.bottom) / 2, (float)
+                    (bounds.right - bounds
+                            .left) / 2, bgPaint);
+
+            c.drawCircle((float) (bounds.left + bounds.right) / 2, (float) (bounds.top + bounds.bottom) / 2, ((float)
+                    (bounds.right - bounds
+                            .left) / 2) - 4, borderPaint);
+            int space = 12;
+            RectF rectF = new RectF(bounds.left + space, bounds.top + space, bounds.right - space, bounds.bottom -
                     space);
             float rotate = progress * 360 / 100;
-            c.drawArc(rectF, 90f, rotate, true, mPaint);
+            c.drawArc(rectF, -90f, rotate, true, mPaint);
         }
 
         public void setProgress(int progress) {

@@ -3,6 +3,7 @@ package com.cartoon.pictures.glide;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.GlideBuilder;
@@ -14,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
@@ -28,6 +30,8 @@ import okio.ForwardingSource;
 import okio.Okio;
 import okio.Source;
 
+import static com.cartoon.pictures.glide.ProgressTarget.TAG;
+
 /**
  * Created by chenxunlin01 on 2016/12/16.
  */
@@ -37,6 +41,7 @@ public class OkHttpProgressGlideModule implements GlideModule {
     public static void forget(String url) {
         DispatchingProgressListener.forget(url);
     }
+
     public static void expect(String url, UIProgressListener listener) {
         DispatchingProgressListener.expect(url, listener);
     }
@@ -49,8 +54,11 @@ public class OkHttpProgressGlideModule implements GlideModule {
 
     @Override
     public void registerComponents(Context context, Glide glide) {
-        OkHttpClient client = new OkHttpClient();
-        client.networkInterceptors().add(createInterceptor(new DispatchingProgressListener()));
+        OkHttpClient client = new OkHttpClient.Builder()
+                .readTimeout(30, TimeUnit.SECONDS)
+                .connectTimeout(12, TimeUnit.SECONDS)
+                .retryOnConnectionFailure(false)
+                .addNetworkInterceptor(createInterceptor(new DispatchingProgressListener())).build();
         glide.register(GlideUrl.class, InputStream.class, new OkHttpUrlLoader.Factory(client));
     }
 
@@ -158,12 +166,12 @@ public class OkHttpProgressGlideModule implements GlideModule {
         }
 
         @Override
-        public long contentLength(){
+        public long contentLength() {
             return responseBody.contentLength();
         }
 
         @Override
-        public BufferedSource source(){
+        public BufferedSource source() {
             if (bufferedSource == null) {
                 bufferedSource = Okio.buffer(source(responseBody.source()));
             }
@@ -184,6 +192,7 @@ public class OkHttpProgressGlideModule implements GlideModule {
                         totalBytesRead += bytesRead;
                     }
                     progressListener.update(url, totalBytesRead, fullLength);
+
                     return bytesRead;
                 }
             };

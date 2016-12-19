@@ -1,18 +1,9 @@
 package com.cartoon.pictures.activities;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.load.resource.gif.GifDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
-import com.cartoon.pictures.glide.OkHttpProgressGlideModule;
+import com.cartoon.pictures.glide.GlideManager;
 import com.cartoon.pictures.R;
 import com.cartoon.pictures.base.BaseActivity;
 import com.cartoon.pictures.business.bean.GifInfo;
@@ -23,11 +14,11 @@ import com.downloader.DownloaderManager;
 import com.downloader.bean.DownloaderInfo;
 
 
-public class GifDialogActivity extends BaseActivity implements OkHttpProgressGlideModule.UIProgressListener {
+public class GifDialogActivity extends BaseActivity {
 
     public static final String TAG = "GifDialogActivity";
 
-    private TextView progressWheel;
+    private ImageView progressWheel;
     private CircleProgressDrawable circleProgressDrawable;
 
     @Override
@@ -44,58 +35,18 @@ public class GifDialogActivity extends BaseActivity implements OkHttpProgressGli
     }
 
     private void bindDatas() {
-
-//        final ProgressWheel progressWheel = (com.cartoon.pictures.uilibrary.widget.ProgressWheel) findViewById(R.id
-//                .item_progress_wheel);
-        progressWheel = (TextView) findViewById(R.id.item_progress_wheel);
-//        circleProgressDrawable = new CircleProgressDrawable();
-//        circleProgressDrawable.setProgress(0);
-//        progressWheel.setImageDrawable(circleProgressDrawable);
-
-        final View imgLayout = findViewById(R.id.img_layout);
         final GifInfo gifInfo = getGifInfo();
-        ImageView imageView = (ImageView) findViewById(R.id.gif_img);
+        progressWheel = (ImageView) findViewById(R.id.item_progress_wheel);
+        circleProgressDrawable = new CircleProgressDrawable();
+        circleProgressDrawable.setProgress(10);
+        progressWheel.setImageDrawable(circleProgressDrawable);
+
+        final ImageView imageView = (ImageView) findViewById(R.id.gif_img);
         if (Utils.isGif(gifInfo.getRemoteUrl())) {
-            Glide.with(this).load(gifInfo.getRemoteUrl()).asGif().diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                    .listener(new RequestListener<String, GifDrawable>() {
-                        @Override
-                        public boolean onException(Exception e, String model, Target<GifDrawable> target, boolean
-                                isFirstResource) {
-                            progressWheel.setVisibility(View.GONE);
-                            imgLayout.setVisibility(View.INVISIBLE);
+            GlideManager.loadGifWithProgress(this,gifInfo.getRemoteUrl(),imageView,progressWheel);
 
-                            return false;
-                        }
-
-                        @Override
-                        public boolean onResourceReady(GifDrawable resource, String model, Target<GifDrawable>
-                                target, boolean isFromMemoryCache, boolean isFirstResource) {
-                            progressWheel.setVisibility(View.GONE);
-                            imgLayout.setVisibility(View.VISIBLE);
-                            return false;
-                        }
-                    })
-                    .into(imageView);
         } else {
-            Glide.with(this).load(gifInfo.getRemoteUrl()).diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                    .listener(new RequestListener<String, GlideDrawable>() {
-                        @Override
-                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean
-                                isFirstResource) {
-                            progressWheel.setVisibility(View.GONE);
-                            imgLayout.setVisibility(View.INVISIBLE);
-                            return false;
-                        }
-
-                        @Override
-                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable>
-                                target, boolean isFromMemoryCache, boolean isFirstResource) {
-                            progressWheel.setVisibility(View.GONE);
-                            imgLayout.setVisibility(View.VISIBLE);
-                            return false;
-                        }
-                    })
-                    .into(imageView);
+            GlideManager.loadImageWithProgress(this,gifInfo.getRemoteUrl(),imageView,progressWheel);
         }
         ImageView downBtn = (ImageView) findViewById(R.id.download);
         downBtn.setOnClickListener(new View.OnClickListener() {
@@ -113,20 +64,4 @@ public class GifDialogActivity extends BaseActivity implements OkHttpProgressGli
         return (GifInfo) getIntent().getSerializableExtra("gif");
     }
 
-//    @Override
-//    public void update(long bytesRead, long contentLength, boolean done) {
-//        Log.e(TAG, "update: " + bytesRead * 100 / contentLength);
-////        circleProgressDrawable.setProgress((int) (bytesRead * 100 / contentLength));
-//        progressWheel.setText(""+bytesRead * 100 / contentLength);
-//    }
-
-    @Override
-    public void onProgress(long bytesRead, long expectedLength) {
-        Log.e(TAG, "update: " + bytesRead * 100 / expectedLength);
-    }
-
-    @Override
-    public float getGranualityPercentage() {
-        return 10;
-    }
 }

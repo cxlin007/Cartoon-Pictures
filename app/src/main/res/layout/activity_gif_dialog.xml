@@ -7,29 +7,12 @@
     android:background="@color/white"
     android:minHeight="200dp">
 
-    <!--<com.cartoon.pictures.uilibrary.widget.ProgressWheel-->
-    <!--android:id="@+id/item_progress_wheel"-->
-    <!--android:layout_width="80dp"-->
-    <!--android:layout_height="80dp"-->
-    <!--android:layout_centerInParent="true"-->
-    <!--android:visibility="visible"-->
-    <!--wheel:matProg_barColor="#5588FF"-->
-    <!--wheel:matProg_progressIndeterminate="true"/>-->
-
-    <TextView
-        android:id="@+id/item_progress_wheel"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_centerInParent="true"
-        android:visibility="visible"/>
-
     <RelativeLayout
         android:id="@+id/img_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="16dp"
-        android:paddingTop="8dp"
-        android:visibility="invisible">
+        android:paddingTop="8dp">
 
         <ImageView
             android:id="@+id/download"
@@ -41,26 +24,33 @@
             android:padding="4dp"
             android:src="@drawable/ic_player_download_no"/>
 
-        <ImageView
-            android:id="@+id/share"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="16dp"
-            android:layout_toLeftOf="@id/download"
-            android:background="@drawable/common_item_mask"
-            android:padding="4dp"
-            android:src="@drawable/ic_player_share_no"/>
+        <!--<ImageView-->
+            <!--android:id="@+id/share"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginRight="16dp"-->
+            <!--android:layout_toLeftOf="@id/download"-->
+            <!--android:background="@drawable/common_item_mask"-->
+            <!--android:padding="4dp"-->
+            <!--android:src="@drawable/ic_player_share_no"/>-->
 
 
         <ImageView
             android:id="@+id/gif_img"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/share"
+            android:layout_below="@id/download"
             android:layout_margin="4dp"
             />
 
     </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/item_progress_wheel"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_centerInParent="true"
+        android:visibility="visible"/>
 
 
 </RelativeLayout>

@@ -1,6 +1,7 @@
 package com.cartoon.pictures.glide;
 
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
@@ -11,6 +12,9 @@ import com.bumptech.glide.request.target.Target;
  */
 
 public abstract class ProgressTarget<T, Z> extends WrappingTarget<Z> implements OkHttpProgressGlideModule.UIProgressListener {
+    
+    public static final String TAG ="ProgressTarget";
+    
     private T model;
     private boolean ignoreProgress = true;
     public ProgressTarget(Target<Z> target) {
@@ -99,6 +103,7 @@ public abstract class ProgressTarget<T, Z> extends WrappingTarget<Z> implements 
         start();
     }
     @Override public void onResourceReady(Z resource, GlideAnimation<? super Z> animation) {
+        Log.e(TAG, "onResourceReady: ");
         cleanup();
         super.onResourceReady(resource, animation);
     }
